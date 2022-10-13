@@ -39,7 +39,7 @@ const DisplayGame = ({pool}) => {
 
         return container
       })
-      console.log("the fresh generated cases are: ",newCases)
+      //console.log("the fresh generated cases are: ",newCases)
       return newCases;
     }
     setCases(genCases(pool, 10))
@@ -71,7 +71,7 @@ const DisplayGame = ({pool}) => {
 
   const buildLeftovers = async () => {
     const genLeftovers = (arr) => {
-      console.log("genLeftovers fired, state is gonna set")
+      //console.log("genLeftovers fired, state is gonna set")
       let copyPool = [...pool]
       let copyCases = arr
 
@@ -86,7 +86,7 @@ const DisplayGame = ({pool}) => {
       return copyPool
     }
     const realLeftovers = await genLeftovers(cases)
-    console.log("leftover cases generated: ", realLeftovers)
+    //console.log("leftover cases generated: ", realLeftovers)
     setLeftovers(realLeftovers)
     
   }
@@ -138,9 +138,9 @@ const DisplayGame = ({pool}) => {
       let copy = gameCases
       let index = copy.indexOf(removed[i])
       copy.splice(index, 1)
-      console.log("found item at index: ", index)
+      //console.log("found item at index: ", index)
       await setGameCases(copy)
-      console.log("intercepting...new game cases are: ", gameCases)
+      //console.log("intercepting...new game cases are: ", gameCases)
 
       
       copyOrigCases = copyOrigCases.map((box) => {
@@ -159,7 +159,7 @@ const DisplayGame = ({pool}) => {
       
       
     }
-    console.log("the new copy of cases should be:", copyOrigCases)
+    //console.log("the new copy of cases should be:", copyOrigCases)
     setCases(copyOrigCases)
     setDisplayCases(copyDisplayCases)
 
@@ -171,22 +171,22 @@ const DisplayGame = ({pool}) => {
   const buildOffer = async (arr) => {
     const latestCases = arr
     const len = arr.length
-    console.log("the cases used for calculating offer are: ", latestCases)
+    //console.log("the cases used for calculating offer are: ", latestCases)
     let offer = latestCases.reduce((prev, curr) => {
       return prev + Math.pow(curr.points, 2)
     }, 0)
     offer = Math.sqrt(offer/len)
     offer = Math.round(offer * 100) / 100
-    console.log(offer)
-    console.log("leftovers to select offer from", leftovers)
+    //console.log(offer)
+    //console.log("leftovers to select offer from", leftovers)
 
     const getClosestPoints = (data, target) => 
       data.reduce((acc, obj) =>
         Math.abs(target - obj.points) < Math.abs(target - acc.points) ? obj : acc
     );
     const playerOffer = getClosestPoints(leftovers, offer)
-    console.log("your selected case is: ", caseSelected)
-    console.log("the player to be offered is: ", playerOffer)
+    //console.log("your selected case is: ", caseSelected)
+    //console.log("the player to be offered is: ", playerOffer)
 
     setOffer(playerOffer)
   }
@@ -279,19 +279,19 @@ const DisplayGame = ({pool}) => {
   useEffect(() => {
     if(round === 1) {
       elimCases(3)
-      console.log("eliminating first 3 fired")
+      console.log("eliminating first 3 fired. AND STOP TRYING TO CHEAT!")
     }
     if(round === 2) {
       elimCases(2)
-      console.log("eliminating second 2 fired")
+      //console.log("eliminating second 2 fired")
     }
     if(round === 3) {
       elimCases(2)
-      console.log("eliminating next 2 fired")
+      //console.log("eliminating next 2 fired")
     }
     if(round === 4) {
       elimCases(1)
-      console.log("eliminating last fired")
+      //console.log("eliminating last fired")
     }
   }, [round])
 
