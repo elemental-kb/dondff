@@ -1,3 +1,7 @@
+# Deal or No Deal Fantasy Football
+
+A fun fantasy mini game. Play a game based on the popular game show, only using Fantasy Football projections instead of money. Play with league mates until everyone has one RB and one WR for the week. After all the games are complete, the highest scoring line-up wins.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
