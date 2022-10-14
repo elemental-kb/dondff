@@ -164,20 +164,20 @@ const DisplayGame = ({pool}) => {
     setDisplayCases(copyDisplayCases)
 
     if(round <= 3) {
-    buildOffer(gameCases)
+    buildOffer(gameCases, caseSelected)
     }
-  }, [gameCases, removedCases, round, cases, displayCases])
+  }, [gameCases, removedCases, round, cases, displayCases, caseSelected])
 
-  const buildOffer = async (arr) => {
-    const latestCases = arr
-    const len = arr.length
+  const buildOffer = async (arr, toAdd) => {
+    const latestCases = [...arr, toAdd]
+    const len = latestCases.length
     //console.log("the cases used for calculating offer are: ", latestCases)
     let offer = latestCases.reduce((prev, curr) => {
       return prev + Math.pow(curr.points, 2)
     }, 0)
     offer = Math.sqrt(offer/len)
     offer = Math.round(offer * 100) / 100
-    //console.log(offer)
+    console.log(offer)
     //console.log("leftovers to select offer from", leftovers)
 
     const getClosestPoints = (data, target) => 
@@ -186,7 +186,7 @@ const DisplayGame = ({pool}) => {
     );
     const playerOffer = getClosestPoints(leftovers, offer)
     //console.log("your selected case is: ", caseSelected)
-    //console.log("the player to be offered is: ", playerOffer)
+    console.log("the player to be offered is: ", playerOffer)
 
     setOffer(playerOffer)
   }
