@@ -7,8 +7,8 @@ import hero from './images/DOND.jpg'
 
 function Home() {
   
-  const [week, setWeek] = useState("1")
-  const [type, setType] = useState("WR")
+  const [week, setWeek] = useState("")
+  const [type, setType] = useState("")
   const [limit, setLimit] = useState(null)
   const [pool, setPool] = useState([])
   
