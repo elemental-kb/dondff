@@ -58,9 +58,7 @@ const Dashboard = () => {
     }
   }
 
-  if (!user) {
-    return <Navigate replace to="/login" />
-  } else {
+
     return (
       <div className="dashboard">
         <h2>Welcome to Your Dashboard</h2>
@@ -83,7 +81,6 @@ const Dashboard = () => {
         </div>
       </div>
     )
-  }
 
  
 }

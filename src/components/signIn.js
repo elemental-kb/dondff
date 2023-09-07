@@ -48,7 +48,13 @@ const SignUp = () => {
   }
 
   if (user) {
-    return <Navigate replace to="/dashboard" />
+    return (
+      <div className="sign-up-form">
+        <h4>User Logged IN:</h4>
+        {user ? user.email : "Not Logged In"}
+        <button onClick={logout}>Sign Out</button>
+      </div>
+    );
   } else {
     return (
       <div className="sign-up-form">
@@ -65,9 +71,6 @@ const SignUp = () => {
           <button onClick={login}>Login</button>
         </div>
   
-        <h4>User Logged IN:</h4>
-          {user ? user.email : "Not Logged In"}
-        <button onClick={logout}>Sign Out</button>
       </div>
     )
   }
