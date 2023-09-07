@@ -64,6 +64,7 @@ function Home() {
           <label>
             select NFL week:
             <select value={week} onChange={(e) => setWeek(e.target.value)}>            
+              <option > </option>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
