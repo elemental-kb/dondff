@@ -53,6 +53,7 @@ const SignUp = () => {
         <h4>User Logged IN:</h4>
         {user ? user.email : "Not Logged In"}
         <button onClick={logout}>Sign Out</button>
+        <button onClick={() => {navigate("/dashboard")}}>Dashboard</button>
       </div>
     );
   } else {
