@@ -3,6 +3,7 @@ import { auth, db } from "../firebase-config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { Navigate, useNavigate } from "react-router-dom";
 import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot } from "firebase/firestore";
+import { v4 as uuidv4 } from 'uuid';
 
 const Dashboard = () => {
 
@@ -15,11 +16,19 @@ const Dashboard = () => {
 
 
   const addLeague = async () => {
-    await addDoc(leaguesRef, {
-      name: newLeague,
-      uid: user.uid
-    })
-  }
+    try {
+      const accessCode = uuidv4(); // Generate a unique access code
+      const newLeagueRef = await addDoc(leaguesRef, {
+        name: newLeague,
+        uid: user.uid,
+        accessCode: accessCode, // Store the access code
+      });
+       // After creating the league, navigate to its management page
+      navigate(`/league/${newLeagueRef.id}`);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   const deleteLeague = async (id) => {
     const leagueDoc = doc(db, "leagues", id)

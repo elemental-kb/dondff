@@ -43,9 +43,23 @@ const League = () => {
   return (
     <div className="league-panel">
     <h2>{league.name}</h2>
+
+    {user && user.uid === league.uid && (
+      <div>
+        <p>Access Code: {league.accessCode}</p>
+        <p>URL: /league/{leagueId}</p>
+        
+        <h4>Seasons:</h4>
+        <Seasons league={league} leagueId={leagueId} leagueRef={leagueRef} />
+      </div>
+    )}
+
+    {!user || user.uid != league.uid && (
+      <div>
+        Stuff for code users
+      </div>
+    )}
     
-    <h4>Seasons:</h4>
-    <Seasons league={league} leagueId={leagueId} leagueRef={leagueRef} />
     </div>
   )
 }

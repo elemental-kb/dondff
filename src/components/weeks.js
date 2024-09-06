@@ -22,6 +22,7 @@ const Weeks = ({leagueId, season}) => {
       const actualWeek = json.week
       setActualNFLWeek(actualWeek)
       
+      
     } catch (error) {
       console.log(error)
     }

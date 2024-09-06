@@ -7,7 +7,7 @@ import Weeks from "./weeks";
 const Seasons = ({league, leagueId, leagueRef}) => {
   
   const [year, setYear] = useState("")
-  const [isActive, setIsActive] = useState(false);
+  const [seasonIsActive, setSeasonIsActive] = useState(false);
 
   
   const leagueCollection = collection(db, "leagues", leagueId, "seasons")
@@ -36,18 +36,18 @@ const Seasons = ({league, leagueId, leagueRef}) => {
       <div className="accordion">
         {docs?.map((doc) => (
           <div className="accordion-item" key={Math.random()} >
-            <div className="accordion-title" onClick={() => setIsActive(!isActive)}>
+            <div className="accordion-title" onClick={() => setSeasonIsActive(!seasonIsActive)} key={Math.random()}>
               <div>{doc.season}</div>
-              <div>{isActive ? '-' : '+'}</div>
+              <div>{seasonIsActive ? '-' : '+'}</div>
             </div>
-            {isActive && <div className="accordion-content">
+            {seasonIsActive && <div className="accordion-content">
               <Weeks leagueId={leagueId} season={doc.season}/>
             </div>}
           </div>
         ))}
       </div>
       
-       <button onClick={()=>{addSeason("2023")}}>Add 2023 Season</button>
+       <button onClick={()=>{addSeason("2024")}}>Add 2024 Season</button>
     </div>
   )
 }

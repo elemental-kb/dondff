@@ -19,7 +19,7 @@ function Home() {
       const weekInput = week
       const typeInput = type
       const playerLimit = limit
-      const url = `https://api.sleeper.com/projections/nfl/2023/${weekInput}?season_type=regular&position=${typeInput}&order_by=pts_ppr`
+      const url = `https://api.sleeper.com/projections/nfl/2024/${weekInput}?season_type=regular&position=${typeInput}&order_by=pts_ppr`
       const response = await fetch(url)
       const json = await response.json()
       for (let i = 0; i < playerLimit; i++) {
