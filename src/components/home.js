@@ -27,7 +27,6 @@ function Home() {
 
   useEffect(() => {
     if(limit) {
-      console.log()
       getPlayers(week, type, "2024", limit, setPool);
     }
   }, [limit])
