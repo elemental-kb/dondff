@@ -133,7 +133,12 @@ const Game = () => {
     
   }
 
-
+  const removeOfferFromLeftovers = async (declinedOffer) => {
+    let indexToRemove = leftovers.findIndex(player => player.playerId == declinedOffer.playerId);
+    if (indexToRemove !== -1) {
+      leftovers.splice(indexToRemove, 1);
+    }
+  }
 
   const resetGame = () => {
     setReset(true)
@@ -272,6 +277,7 @@ const Game = () => {
   }, [cases])
 
   const declineOffer = () => {
+    removeOfferFromLeftovers(offer);
     setRound(round + 1)
   }
 
