@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback} from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { auth, db } from "../firebase-config";
 import { doc, setDoc } from "firebase/firestore";
+import { getPlayers, generateCases } from './util';
 
 const Game = () => {
 
@@ -31,61 +32,8 @@ const Game = () => {
   const [limit, setLimit] = useState(65)
   const [pool, setPool] = useState([])
 
-  const getPlayers = async () => {
-    try {
-      const weekInput = week
-      const typeInput = type
-      const seasonParam = season
-      const playerLimit = limit
-      const url = `https://api.sleeper.com/projections/nfl/${seasonParam}/${weekInput}?season_type=regular&position=${typeInput}&order_by=pts_ppr`
-      const response = await fetch(url)
-      const json = await response.json()
-      for (let i = 0; i < playerLimit; i++) {
-        let points = json[i].stats.pts_ppr
-        let first = json[i].player.first_name
-        let last = json[i].player.last_name
-        let status = json[i].player.injury_status
-        let opponent = json[i].opponent
-        let team = json[i].team
-        let playerId = json[i].player_id
-        let result = {"name": `${first} ${last}`, "points": points, "status": status, "opponent": opponent, "team": team, "playerId": playerId}
-        setPool(pool => [...pool, result])
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  
   const buildCases = useCallback(async () => {
-    const genCases = (arr, n) => {
-      var result = new Array(n),
-          len = arr.length,
-          taken = new Array(len);
-      if (n > len)
-          throw new RangeError("getRandom: more elements taken than available");
-      while (n--) {
-          var x = Math.floor(Math.random() * len);
-          result[n] = arr[x in taken ? taken[x] : x];
-          taken[x] = --len in taken ? taken[len] : len;
-      }
-      const newCases = result.map((item, index) => {
-        const container = {}
-        container.number = index + 1
-        container.name = item.name
-        container.points = item.points
-        container.opened = false
-        container.status = item.status
-        container.opponent = item.opponent
-        container.team = item.team
-        container.playerId = item.playerId
-        return container
-      })
-      //console.log("the fresh generated cases are: ",newCases)
-      return newCases;
-    }
-    setCases(genCases(pool, 10))
-    
+    setCases(generateCases(pool, 10))
   }, [pool])
 
   const buildDisplayCases = () => {
@@ -133,7 +81,12 @@ const Game = () => {
     
   }
 
-
+  const removeOfferFromLeftovers = (offer) => {
+    let offerToRemoveIndex = leftovers.findIndex(player => player.playerId == offer.playerId);
+    if (offerToRemoveIndex !== -1) {
+      leftovers.splice(offerToRemoveIndex, 1);
+    }
+  }
 
   const resetGame = () => {
     setReset(true)
@@ -272,6 +225,7 @@ const Game = () => {
   }, [cases])
 
   const declineOffer = () => {
+    removeOfferFromLeftovers(offer);
     setRound(round + 1)
   }
 
@@ -356,8 +310,7 @@ const Game = () => {
 
   useEffect(() => {
     if(limit) {
-      getPlayers()
-      
+      getPlayers(week, type, season, limit, setPool);
     }
   }, [limit])
 
@@ -436,8 +389,7 @@ const Game = () => {
     if(cases && caseSelected) {
       return(
         <>
-        {cases.map((box,index) => (
-          box.opened === true ? 
+        { cases.map((box,index) => ( box.opened === true ? 
           <div className="box opened" key={index}>
             {box.number}<br />
             {box.name}({box.points})
@@ -446,15 +398,13 @@ const Game = () => {
           <div className="box" key={index}>
             <span className="num">{box.number}</span>
           </div>
-        )
-
-        )}
+        ))}
         </>
       )
     } else if(cases) {
       return(
         <>
-        {cases.map((box,index) => 
+        { cases.map((box,index) => 
           <div className="box" key={index} onClick={() => selectCase(cases[index])}>
             <span className="num">{box.number}</span>
           </div>

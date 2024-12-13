@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback} from 'react'
+import { generateCases } from './util'
 
 const DisplayGame = ({pool}) => {
 
@@ -16,34 +17,7 @@ const DisplayGame = ({pool}) => {
   
   
   const buildCases = useCallback(async () => {
-    const genCases = (arr, n) => {
-      var result = new Array(n),
-          len = arr.length,
-          taken = new Array(len);
-      if (n > len)
-          throw new RangeError("getRandom: more elements taken than available");
-      while (n--) {
-          var x = Math.floor(Math.random() * len);
-          result[n] = arr[x in taken ? taken[x] : x];
-          taken[x] = --len in taken ? taken[len] : len;
-      }
-      const newCases = result.map((item, index) => {
-        const container = {}
-        container.number = index + 1
-        container.name = item.name
-        container.points = item.points
-        container.opened = false
-        container.status = item.status
-        container.opponent = item.opponent
-        container.team = item.team
-
-        return container
-      })
-      //console.log("the fresh generated cases are: ",newCases)
-      return newCases;
-    }
-    setCases(genCases(pool, 10))
-    
+    setCases(generateCases(pool, 10));
   }, [])
 
   const buildDisplayCases = () => {
@@ -91,7 +65,12 @@ const DisplayGame = ({pool}) => {
     
   }
 
-
+  const removeOfferFromLeftovers = (offer) => {
+    let offerToRemoveIndex = leftovers.findIndex(player => player.playerId == offer.playerId);
+    if (offerToRemoveIndex !== -1) {
+      leftovers.splice(offerToRemoveIndex, 1);
+    }
+  }
 
   const resetGame = () => {
     setReset(true)
@@ -230,6 +209,7 @@ const DisplayGame = ({pool}) => {
   }, [cases])
 
   const declineOffer = () => {
+    removeOfferFromLeftovers(offer);
     setRound(round + 1)
   }
 
@@ -351,10 +331,10 @@ const DisplayGame = ({pool}) => {
           Players in cases: 
           {displayCases.map((item, index) => (
             item.opened? 
-            <div className="list-player eliminated">{item.name} <span className="status">{item.team} {item.status}</span><br />
+            <div className="list-player eliminated" key={index}>{item.name} <span className="status">{item.team} {item.status}</span><br />
             <span className="proj">Proj: {item.points} Opp: {item.opponent}</span></div> 
             :
-            <div className="list-player">{item.name} <span className="status">{item.team} {item.status}</span><br />
+            <div className="list-player" key={index}>{item.name} <span className="status">{item.team} {item.status}</span><br />
             <span className="proj">Proj: {item.points} Opp: {item.opponent}</span></div> 
           )
           )}
@@ -445,7 +425,7 @@ const DisplayGame = ({pool}) => {
 
   return (
     <>
-      <div class="game">
+      <div className="game">
         <div className="board">
           {render()}
         </div>
