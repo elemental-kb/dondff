@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import DisplayGame from './cases'
+import { getPlayers } from './util'
 import hero from './images/DOND.jpg'
 
 
@@ -14,29 +15,6 @@ function Home() {
   
   const navigate = useNavigate()
 
-  const getPlayers = async () => {
-    try {
-      const weekInput = week
-      const typeInput = type
-      const playerLimit = limit
-      const url = `https://api.sleeper.com/projections/nfl/2024/${weekInput}?season_type=regular&position=${typeInput}&order_by=pts_ppr`
-      const response = await fetch(url)
-      const json = await response.json()
-      for (let i = 0; i < playerLimit; i++) {
-        let points = json[i].stats.pts_ppr
-        let first = json[i].player.first_name
-        let last = json[i].player.last_name
-        let status = json[i].player.injury_status
-        let opponent = json[i].opponent
-        let team = json[i].team
-        let result = {"name": `${first} ${last}`, "points": points, "status": status, "opponent": opponent, "team": team}
-        setPool(pool => [...pool, result])
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   useEffect(() => {
     if(type === "WR") {
       setLimit(95)
@@ -49,7 +27,8 @@ function Home() {
 
   useEffect(() => {
     if(limit) {
-      getPlayers()
+      console.log()
+      getPlayers(week, type, "2024", limit, setPool);
     }
   }, [limit])
 
