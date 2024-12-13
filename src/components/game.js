@@ -133,10 +133,10 @@ const Game = () => {
     
   }
 
-  const removeOfferFromLeftovers = async (declinedOffer) => {
-    let indexToRemove = leftovers.findIndex(player => player.playerId == declinedOffer.playerId);
-    if (indexToRemove !== -1) {
-      leftovers.splice(indexToRemove, 1);
+  const removeOfferFromLeftovers = (offer) => {
+    let offerToRemoveIndex = leftovers.findIndex(player => player.playerId == offer.playerId);
+    if (offerToRemoveIndex !== -1) {
+      leftovers.splice(offerToRemoveIndex, 1);
     }
   }
 
