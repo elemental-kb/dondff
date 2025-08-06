@@ -113,16 +113,6 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
         <Link
           to="/game/setting-lineups"
           state={{
-            contestants: [
-              {
-                name: user.uid,
-                lineUp: {
-                  RB: { name: "awaiting game..." },
-                  WR: { name: "awaiting game..." },
-                  finalScore: null,
-                },
-              },
-            ],
             leagueId: leagueId,
             season: season,
             week: week,

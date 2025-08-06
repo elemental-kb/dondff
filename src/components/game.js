@@ -6,16 +6,11 @@ import { getPlayers, generateCases } from './util';
 
 const Game = () => {
 
-  
-  const {contestants, leagueId, season, week} = useLocation().state
-  
-  console.log('The contestants for this game are:', contestants)
-  console.log('The league ID for this game is:', leagueId)
+
+  const { leagueId, season, week } = useLocation().state
+  const user = auth.currentUser
   const navigate = useNavigate()
-  
-  const [counter, setCounter] = useState(0)
-  const [currentContestant, setCurrentContestant] = useState(contestants[counter] || {})
-  const [gameContestants, setGameContestants] = useState(contestants)
+
   const [cases, setCases] = useState(null)
   const [caseSelected, setCaseSelected] = useState(null)
   const [gameCases, setGameCases] = useState(null)
@@ -31,6 +26,10 @@ const Game = () => {
   const [type, setType] = useState("RB")
   const [limit, setLimit] = useState(65)
   const [pool, setPool] = useState([])
+  const [lineUp, setLineUp] = useState({
+    RB: { name: "awaiting game..." },
+    WR: { name: "awaiting game..." },
+  })
 
   const buildCases = useCallback(async () => {
     setCases(generateCases(pool, 10))
@@ -90,6 +89,8 @@ const Game = () => {
 
   const resetGame = () => {
     setReset(true)
+    setMidway(false)
+    setLineUp(prev => ({ ...prev, [type]: { name: "awaiting game..." } }))
   }
   
   const removeCases = (arr, n) => {
@@ -252,46 +253,21 @@ const Game = () => {
     cleanAllCases()
     setRound(5)
   }
-
-  const updateCurrentContestant = () => {
-    setCurrentContestant({ ...currentContestant, lineUp: { ...currentContestant.lineUp, [type]: caseSelected}})
-  }
-
-  const updateGameContestantsArray = () => {
-    setGameContestants(gameContestants.map(x => (x.name === currentContestant.name ? currentContestant  : x)))
-  }
-
+  
   const swapPosition = () => {
     setPool([])
     setType("WR")
     setLimit(95)
     resetGame()
-    setCounter(0)
-    setMidway(false)
     setFinished(true)
   }
 
-  const nextContestant = () => {
-    const newCount = counter + 1
-    if (newCount <= contestants.length - 1) {
-      setCounter(newCount)
-      resetGame()
-    } else if (newCount === contestants.length) {
-      setMidway(true)
-    } else {
-      setFinished(true)
-    }
-    
-  }
-
-  const submitLineups = async () => {
-    for(const contestant of gameContestants) {
-      const docRef = doc(db, "leagues", leagueId, "seasons", season, "weeks", week, "entries", contestant.name)
-      await setDoc(docRef, {
-        name: contestant.name,
-        lineUp: contestant.lineUp
+  const submitLineup = async () => {
+    const docRef = doc(db, "leagues", leagueId, "seasons", season, "weeks", week, "entries", user.uid)
+    await setDoc(docRef, {
+      name: user.uid,
+      lineUp: lineUp
     })
-    }
     navigate(-1)
   }
 
@@ -315,15 +291,10 @@ const Game = () => {
   }, [limit])
 
   useEffect(() => {
-    setCurrentContestant(gameContestants[counter])
-  }, [counter])
-
-
-  useEffect(() => {
     if(pool.length > 0 && !cases) {
       console.log("pool when cases try to build", pool)
       buildCases()
-      
+
     }
   }, [cases, pool])
 
@@ -358,15 +329,10 @@ const Game = () => {
     }
 
     if(round === 5) {
-      //update Game Contestants array with new fantasy player object
-      updateCurrentContestant()
+      setLineUp(prev => ({ ...prev, [type]: caseSelected }))
+      setMidway(true)
     }
-  }, [round])
-
-  useEffect(() => {
-    updateGameContestantsArray()
-    console.log("updated current contestant obj:", currentContestant)
-  }, [currentContestant])
+  }, [round, caseSelected, type])
 
   useEffect(() => {
     if(reset) {
@@ -499,7 +465,7 @@ const Game = () => {
           </div>
           <div className="action-buttons">
             <button className="btn" onClick={resetGame}>Reset</button>
-            {midway? <> {finished? <button className="btn" onClick={submitLineups}>Submit Lineups</button> : <button className="btn" onClick={swapPosition}>Switch Position Group</button> } </> : <button className="btn" onClick={nextContestant}>Next</button>}
+            {midway ? (finished ? <button className="btn" onClick={submitLineup}>Submit Lineup</button> : <button className="btn" onClick={swapPosition}>Switch Position Group</button>) : null}
           </div>
         </div>
       )
@@ -507,7 +473,7 @@ const Game = () => {
       return (
         <div className="action-buttons">
             <button className="btn" onClick={resetGame}>Reset</button>
-            {midway? <> {finished? <button className="btn" onClick={submitLineups}>Submit Lineups</button> : <button className="btn" onClick={swapPosition}>Switch Position Group</button> } </> : <button className="btn" onClick={nextContestant}>Next</button>}
+            {midway ? (finished ? <button className="btn" onClick={submitLineup}>Submit Lineup</button> : <button className="btn" onClick={swapPosition}>Switch Position Group</button>) : null}
           </div>
       )
     }
@@ -517,7 +483,7 @@ const Game = () => {
 
   return (
     <>
-      <h3>Current Contestant: {currentContestant.name}</h3>
+      <h3>Current User: {user?.uid}</h3>
       <div className="game">
         <div className="board">
           {render()}
@@ -528,13 +494,11 @@ const Game = () => {
         </div>
       </div>
       <div className="contestant-flexbox">
-        {gameContestants?.map((contestant) => (
-          <div key={Math.random()} className="contestant-card">
-            <p>{contestant.name}</p>
-            <p><b>RB:</b> {contestant.lineUp.RB.name}</p>
-            <p><b>WR:</b> {contestant.lineUp.WR.name}</p>
-          </div>
-        ))}
+        <div className="contestant-card">
+          <p>{user?.uid}</p>
+          <p><b>RB:</b> {lineUp.RB.name}</p>
+          <p><b>WR:</b> {lineUp.WR.name}</p>
+        </div>
       </div>
     </>
   )
