@@ -7,7 +7,7 @@ import Weeks from "./weeks";
 const Seasons = ({league, leagueId, leagueRef}) => {
   
   const [year, setYear] = useState("")
-  const [seasonIsActive, setSeasonIsActive] = useState(false);
+  const [activeSeasons, setActiveSeasons] = useState({});
 
   
   const leagueCollection = collection(db, "leagues", leagueId, "seasons")
@@ -34,20 +34,30 @@ const Seasons = ({league, leagueId, leagueRef}) => {
     <div className="season-container">
       {loading && "Loading..."}
       <div className="accordion">
-        {docs?.map((doc) => (
-          <div className="accordion-item" key={Math.random()} >
-            <div className="accordion-title" onClick={() => setSeasonIsActive(!seasonIsActive)} key={Math.random()}>
-              <div>{doc.season}</div>
-              <div>{seasonIsActive ? '-' : '+'}</div>
+        {docs?.map((doc) => {
+          const isActive = !!activeSeasons[doc.season];
+          return (
+            <div className="accordion-item" key={doc.season} >
+              <div
+                className="accordion-title"
+                onClick={() =>
+                  setActiveSeasons(prev => ({ ...prev, [doc.season]: !prev[doc.season] }))
+                }
+              >
+                <div>{doc.season}</div>
+                <div>{isActive ? '-' : '+'}</div>
+              </div>
+              {isActive && (
+                <div className="accordion-content">
+                  <Weeks leagueId={leagueId} season={doc.season} />
+                </div>
+              )}
             </div>
-            {seasonIsActive && <div className="accordion-content">
-              <Weeks leagueId={leagueId} season={doc.season}/>
-            </div>}
-          </div>
-        ))}
+          );
+        })}
       </div>
       
-       <button onClick={()=>{addSeason("2024")}}>Add 2024 Season</button>
+      <button onClick={() => {addSeason("2025")}}>Add 2025 Season</button>
     </div>
   )
 }
