@@ -9,6 +9,8 @@ const SignUp = () => {
   const [registerPassword, setRegisterPassword] = useState("")
   const [loginEmail, setLoginEmail] = useState("")
   const [loginPassword, setLoginPassword] = useState("")
+  const [registerError, setRegisterError] = useState("")
+  const [loginError, setLoginError] = useState("")
   const [user, setUser] = useState({})
 
   const navigate = useNavigate()
@@ -24,8 +26,9 @@ const SignUp = () => {
       const user = await createUserWithEmailAndPassword(auth, registerEmail, registerPassword)
       console.log(user)
       navigate("/dashboard")
+      setRegisterError("")
     } catch (error) {
-      console.log(error.message)
+      setRegisterError(error.message)
     }
   }
 
@@ -34,8 +37,9 @@ const SignUp = () => {
       const user = await signInWithEmailAndPassword(auth, loginEmail, loginPassword)
       console.log(user)
       navigate("/dashboard")
+      setLoginError("")
     } catch (error) {
-      console.log(error.message)
+      setLoginError(error.message)
     }
   }
 
@@ -61,14 +65,16 @@ const SignUp = () => {
       <div className="sign-up-form">
         <div>
           <h3>Sign Up</h3>
-          <input placeholder='Email...' onChange={(e) => {setRegisterEmail(e.target.value)}}/>
-          <input placeholder='Password...' onChange={(e) => {setRegisterPassword(e.target.value)}}/>
+          <input placeholder='Email...' onChange={(e) => {setRegisterEmail(e.target.value); setRegisterError("")}}/>
+          <input placeholder='Password...' onChange={(e) => {setRegisterPassword(e.target.value); setRegisterError("")}}/>
+          {registerError && <p style={{color: 'red'}}>{registerError}</p>}
           <button onClick={register}>Sign Up</button>
         </div>
         <div>
           <h3>Login</h3>
-          <input placeholder='Email...' onChange={(e) => {setLoginEmail(e.target.value)}}/>
-          <input placeholder='Password...' onChange={(e) => {setLoginPassword(e.target.value)}}/>
+          <input placeholder='Email...' onChange={(e) => {setLoginEmail(e.target.value); setLoginError("")}}/>
+          <input placeholder='Password...' onChange={(e) => {setLoginPassword(e.target.value); setLoginError("")}}/>
+          {loginError && <p style={{color: 'red'}}>{loginError}</p>}
           <button onClick={login}>Login</button>
         </div>
   
