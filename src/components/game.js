@@ -286,7 +286,7 @@ const Game = () => {
 
   const submitLineups = async () => {
     for(const contestant of gameContestants) {
-      const docRef = doc(db, "leagues", leagueId, "seasons", season, "weeks", week, "contestants", contestant.name)
+      const docRef = doc(db, "leagues", leagueId, "seasons", season, "weeks", week, "entries", contestant.name)
       await setDoc(docRef, {
         name: contestant.name,
         lineUp: contestant.lineUp
