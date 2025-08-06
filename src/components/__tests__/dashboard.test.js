@@ -35,7 +35,14 @@ const { render, screen, waitFor } = require('@testing-library/react');
 const userEvent = require('@testing-library/user-event').default;
 const { MemoryRouter } = require('react-router-dom');
 const { v4: uuidv4 } = require('uuid');
-const { addDoc, setDoc, onSnapshot, doc } = require('firebase/firestore');
+const {
+  addDoc,
+  setDoc,
+  onSnapshot,
+  doc,
+  getDocs,
+  query,
+} = require('firebase/firestore');
 const { onAuthStateChanged } = require('firebase/auth');
 const Dashboard = require('../dashboard').default;
 
@@ -79,6 +86,42 @@ test('creates league and adds owner as admin', async () => {
   expect(setDoc.mock.calls[0][1]).toEqual({
     uid: mockUser.uid,
     role: 'admin',
+  });
+});
+
+test('joins league and adds user as player when access code matches', async () => {
+  jest.clearAllMocks();
+  doc.mockReturnValue('memberRef');
+  const mockUser = { uid: 'user123' };
+  onAuthStateChanged.mockImplementation((auth, callback) => {
+    callback(mockUser);
+    return () => {};
+  });
+
+  query.mockReturnValue('query');
+  getDocs.mockResolvedValue({ empty: false, docs: [{ id: 'league123' }] });
+  setDoc.mockResolvedValue();
+
+  render(
+    <MemoryRouter>
+      <Dashboard />
+    </MemoryRouter>
+  );
+
+  await userEvent.click(screen.getByText('Join League'));
+  await userEvent.type(
+    screen.getByPlaceholderText('Enter Access Code...'),
+    'join-code'
+  );
+  await userEvent.click(screen.getByText('Submit'));
+
+  await waitFor(() => {
+    expect(query).toHaveBeenCalled();
+    expect(getDocs).toHaveBeenCalled();
+    expect(setDoc).toHaveBeenCalledWith('memberRef', {
+      uid: mockUser.uid,
+      role: 'player',
+    });
   });
 });
 
