@@ -108,48 +108,79 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard">
+    <div className="max-w-4xl mx-auto p-4 space-y-4 text-left bg-[#3a465b]/50 rounded">
       <Breadcrumbs items={[{ label: "Dashboard" }]} />
-      <h2>Welcome to Your Dashboard</h2>
-      <h3>{user.email}</h3>
-      <button onClick={logout}>Sign Out</button>
-      <h4>Leagues:</h4>
+      <h2 className="text-2xl font-bold">Welcome to Your Dashboard</h2>
+      <h3 className="text-xl">{user.email}</h3>
+      <button
+        className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+        onClick={logout}
+      >
+        Sign Out
+      </button>
+      <h4 className="text-lg font-semibold">Leagues:</h4>
       {leagues.map((league) => (
-        <div key={league.id} className="league-card">
-          <p>{league.name}</p>
+        <div
+          key={league.id}
+          className="flex items-center justify-between p-4 mb-2 rounded bg-[#3a465b]/50"
+        >
+          <p className="font-semibold">{league.name}</p>
           <p>{league.role === "admin" ? "Admin" : "Player"}</p>
-          <button onClick={() => navigate(`/league/${league.id}`)}>View</button>
+          <button
+            className="px-3 py-1 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+            onClick={() => navigate(`/league/${league.id}`)}
+          >
+            View
+          </button>
         </div>
       ))}
 
-      <div className="actions">
-        <button onClick={() => setShowCreateForm(!showCreateForm)}>
+      <div className="flex gap-4">
+        <button
+          className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+          onClick={() => setShowCreateForm(!showCreateForm)}
+        >
           Create League
         </button>
-        <button onClick={() => setShowJoinForm(!showJoinForm)}>
+        <button
+          className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+          onClick={() => setShowJoinForm(!showJoinForm)}
+        >
           Join League
         </button>
       </div>
 
       {showCreateForm && (
-        <div className="single-form">
+        <div className="flex mt-4 space-x-2">
           <input
+            className="flex-1 p-2 bg-transparent border rounded border-[#3a465b]"
             placeholder="Enter League Name..."
             value={newLeague}
             onChange={(e) => setNewLeague(e.target.value)}
           />
-          <button onClick={addLeague}>Submit</button>
+          <button
+            className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+            onClick={addLeague}
+          >
+            Submit
+          </button>
         </div>
       )}
 
       {showJoinForm && (
-        <div className="single-form">
+        <div className="flex mt-4 space-x-2">
           <input
+            className="flex-1 p-2 bg-transparent border rounded border-[#3a465b]"
             placeholder="Enter Access Code..."
             value={joinCode}
             onChange={(e) => setJoinCode(e.target.value)}
           />
-          <button onClick={joinLeague}>Submit</button>
+          <button
+            className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+            onClick={joinLeague}
+          >
+            Submit
+          </button>
         </div>
       )}
     </div>

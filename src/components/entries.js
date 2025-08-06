@@ -116,32 +116,33 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
   };
 
   return (
-    <div className="contestant-container">
-      <table className="scoreboard-table">
-        <thead>
+    <div className="space-y-4">
+      <table className="w-full text-left border border-[#3a465b]">
+        <thead className="bg-[#3a465b]">
           <tr>
-            <th>Member</th>
-            <th>RB</th>
-            <th>WR</th>
-            <th>Final Score</th>
+            <th className="p-2 border-b border-[#3a465b]">Member</th>
+            <th className="p-2 border-b border-[#3a465b]">RB</th>
+            <th className="p-2 border-b border-[#3a465b]">WR</th>
+            <th className="p-2 border-b border-[#3a465b]">Final Score</th>
           </tr>
         </thead>
         <tbody>
           {sortedEntries.map((entry) => (
-            <tr key={entry.id}>
-              <td>
+            <tr key={entry.id} className="odd:bg-[#3a465b]/20">
+              <td className="p-2 border-b border-[#3a465b]">
                 {isAdmin && (
                   <input
                     type="checkbox"
+                    className="mr-2"
                     checked={selectedUids.includes(entry.id)}
                     onChange={() => toggleUid(entry.id)}
                   />
                 )}
                 {memberLabel(entry.id)}
               </td>
-              <td>{entry.lineUp?.RB?.name ?? ""}</td>
-              <td>{entry.lineUp?.WR?.name ?? ""}</td>
-              <td>{entry.finalScore ?? ""}</td>
+              <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.RB?.name ?? ""}</td>
+              <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.WR?.name ?? ""}</td>
+              <td className="p-2 border-b border-[#3a465b]">{entry.finalScore ?? ""}</td>
             </tr>
           ))}
         </tbody>
@@ -155,7 +156,9 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
             week: week,
           }}
         >
-          <button>Play Game</button>
+          <button className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80">
+            Play Game
+          </button>
         </Link>
       )}
       {isAdmin && (
@@ -168,11 +171,21 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
             participants: selectedUids,
           }}
         >
-          <button disabled={selectedUids.length === 0}>Start Group Game</button>
+          <button
+            className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80 disabled:opacity-50"
+            disabled={selectedUids.length === 0}
+          >
+            Start Group Game
+          </button>
         </Link>
       )}
       {actualWeek > parseInt(week) && isAdmin && (
-        <button onClick={calculateScores}>Calculate Scores</button>
+        <button
+          className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+          onClick={calculateScores}
+        >
+          Calculate Scores
+        </button>
       )}
     </div>
   );
