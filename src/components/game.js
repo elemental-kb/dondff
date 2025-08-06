@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback} from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { auth, db } from "../firebase-config";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { getPlayers, generateCases } from './util';
 
 // Game component that can accept a specific uid or default to the current user
@@ -11,6 +11,7 @@ const Game = ({ uid, onComplete }) => {
   const { leagueId, season, week } = useLocation().state
   const navigate = useNavigate()
   const currentUid = uid || auth.currentUser?.uid
+  const [currentName, setCurrentName] = useState(currentUid)
 
   const [cases, setCases] = useState(null)
   const [caseSelected, setCaseSelected] = useState(null)
@@ -31,6 +32,25 @@ const Game = ({ uid, onComplete }) => {
     RB: { name: "awaiting game..." },
     WR: { name: "awaiting game..." },
   })
+
+  useEffect(() => {
+    const fetchName = async () => {
+      if (!currentUid) return
+      if (uid) {
+        try {
+          const memberRef = doc(db, "leagues", leagueId, "members", currentUid)
+          const memberSnap = await getDoc(memberRef)
+          const data = memberSnap.data()
+          setCurrentName(data?.displayName || data?.name || data?.uid || currentUid)
+        } catch (e) {
+          setCurrentName(currentUid)
+        }
+      } else {
+        setCurrentName(auth.currentUser?.displayName || auth.currentUser?.email || currentUid)
+      }
+    }
+    fetchName()
+  }, [uid, currentUid, leagueId])
 
   const buildCases = useCallback(async () => {
     setCases(generateCases(pool, 10))
@@ -266,7 +286,7 @@ const Game = ({ uid, onComplete }) => {
   const submitLineup = async () => {
     const docRef = doc(db, "leagues", leagueId, "seasons", season, "weeks", week, "entries", currentUid)
     await setDoc(docRef, {
-      name: currentUid,
+      name: currentName,
       lineUp: lineUp
     })
     if(onComplete) {
@@ -488,7 +508,7 @@ const Game = ({ uid, onComplete }) => {
 
   return (
     <>
-      <h3>Current User: {currentUid}</h3>
+      <h3>Current User: {currentName}</h3>
       <div className="game">
         <div className="board">
           {render()}
@@ -500,7 +520,7 @@ const Game = ({ uid, onComplete }) => {
       </div>
       <div className="contestant-flexbox">
         <div className="contestant-card">
-          <p>{currentUid}</p>
+          <p>{currentName}</p>
           <p><b>RB:</b> {lineUp.RB.name}</p>
           <p><b>WR:</b> {lineUp.WR.name}</p>
         </div>
