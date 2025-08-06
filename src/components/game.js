@@ -4,13 +4,13 @@ import { auth, db } from "../firebase-config";
 import { doc, setDoc } from "firebase/firestore";
 import { getPlayers, generateCases } from './util';
 
-// Single-player game that always uses the currently logged-in user's UID
-const Game = () => {
+// Game component that can accept a specific uid or default to the current user
+const Game = ({ uid, onComplete }) => {
 
 
   const { leagueId, season, week } = useLocation().state
   const navigate = useNavigate()
-  const currentUid = auth.currentUser?.uid
+  const currentUid = uid || auth.currentUser?.uid
 
   const [cases, setCases] = useState(null)
   const [caseSelected, setCaseSelected] = useState(null)
@@ -269,7 +269,11 @@ const Game = () => {
       name: currentUid,
       lineUp: lineUp
     })
-    navigate(-1)
+    if(onComplete) {
+      onComplete()
+    } else {
+      navigate(-1)
+    }
   }
 
 
