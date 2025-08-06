@@ -29,7 +29,16 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
 
   const hasEntry = entries?.some((entry) => entry.id === user?.uid);
 
-  const getFinalScores = async () => {
+  const currentMember = members?.find((m) => m.id === user?.uid);
+  const isAdmin = currentMember?.role === "admin";
+
+  const sortedEntries = entries
+    ? [...entries].sort(
+        (a, b) => (b.lineUp.finalScore || 0) - (a.lineUp.finalScore || 0)
+      )
+    : [];
+
+  const calculateScores = async () => {
     if (!entries) return;
     const rbUrl = `https://api.sleeper.com/stats/nfl/${season}/${week}?season_type=regular&position=RB&order_by=pts_ppr`;
     const wrUrl = `https://api.sleeper.com/stats/nfl/${season}/${week}?season_type=regular&position=WR&order_by=pts_ppr`;
@@ -95,20 +104,26 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
 
   return (
     <div className="contestant-container">
-      <div className="contestant-flexbox">
-        {entries?.map((entry) => (
-          <div key={entry.id} className="contestant-card">
-            <p>{memberLabel(entry.id)}</p>
-            <p>
-              <b>RB:</b> {entry.lineUp.RB.name} {entry.lineUp.finalScore && <>{entry.lineUp.RB.pprScore}</>}
-            </p>
-            <p>
-              <b>WR:</b> {entry.lineUp.WR.name} {entry.lineUp.finalScore && <>{entry.lineUp.WR.pprScore}</>}
-            </p>
-            {entry.lineUp.finalScore && <p>Final Score {entry.lineUp.finalScore}</p>}
-          </div>
-        ))}
-      </div>
+      <table className="scoreboard-table">
+        <thead>
+          <tr>
+            <th>Member</th>
+            <th>RB</th>
+            <th>WR</th>
+            <th>Final Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortedEntries.map((entry) => (
+            <tr key={entry.id}>
+              <td>{memberLabel(entry.id)}</td>
+              <td>{entry.lineUp.RB.name}</td>
+              <td>{entry.lineUp.WR.name}</td>
+              <td>{entry.lineUp.finalScore ?? ""}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       {!hasEntry && user && (
         <Link
           to="/game/setting-lineups"
@@ -121,9 +136,9 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
           <button>Play Game</button>
         </Link>
       )}
-      {actualWeek > parseInt(week) ? (
-        <button onClick={getFinalScores}>Get Final Scores</button>
-      ) : null}
+      {actualWeek > parseInt(week) && isAdmin && (
+        <button onClick={calculateScores}>Calculate Scores</button>
+      )}
     </div>
   );
 };
