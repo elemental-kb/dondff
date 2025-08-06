@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { auth, db } from "../firebase-config";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
@@ -31,6 +31,15 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
 
   const currentMember = members?.find((m) => m.id === user?.uid);
   const isAdmin = currentMember?.role === "admin";
+  const [selectedUids, setSelectedUids] = useState([]);
+
+  const toggleUid = (uid) => {
+    setSelectedUids((prev) =>
+      prev.includes(uid)
+        ? prev.filter((id) => id !== uid)
+        : [...prev, uid]
+    );
+  };
 
   const sortedEntries = entries
     ? [...entries].sort(
@@ -116,7 +125,16 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
         <tbody>
           {sortedEntries.map((entry) => (
             <tr key={entry.id}>
-              <td>{memberLabel(entry.id)}</td>
+              <td>
+                {isAdmin && (
+                  <input
+                    type="checkbox"
+                    checked={selectedUids.includes(entry.id)}
+                    onChange={() => toggleUid(entry.id)}
+                  />
+                )}
+                {memberLabel(entry.id)}
+              </td>
               <td>{entry.lineUp.RB.name}</td>
               <td>{entry.lineUp.WR.name}</td>
               <td>{entry.lineUp.finalScore ?? ""}</td>
@@ -134,6 +152,19 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
           }}
         >
           <button>Play Game</button>
+        </Link>
+      )}
+      {isAdmin && (
+        <Link
+          to="/game/group"
+          state={{
+            leagueId: leagueId,
+            season: season,
+            week: week,
+            uids: selectedUids,
+          }}
+        >
+          <button disabled={selectedUids.length === 0}>Start Group Game</button>
         </Link>
       )}
       {actualWeek > parseInt(week) && isAdmin && (
