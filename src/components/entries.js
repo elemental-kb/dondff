@@ -42,9 +42,7 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
   };
 
   const sortedEntries = entries
-    ? [...entries].sort(
-        (a, b) => (b.lineUp.finalScore || 0) - (a.lineUp.finalScore || 0)
-      )
+    ? [...entries].sort((a, b) => (b.finalScore || 0) - (a.finalScore || 0))
     : [];
 
   const calculateScores = async () => {
@@ -59,7 +57,10 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
 
     let playerIds = [];
     for (let i = 0; i < entries.length; i++) {
-      playerIds.push(entries[i].lineUp.RB.playerId, entries[i].lineUp.WR.playerId);
+      const rbId = entries[i].lineUp?.RB?.playerId;
+      const wrId = entries[i].lineUp?.WR?.playerId;
+      if (rbId) playerIds.push(rbId);
+      if (wrId) playerIds.push(wrId);
     }
 
     let entryList = [];
@@ -85,12 +86,14 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
       );
     }
 
-    entryList.map(
-      (x) =>
-        (x.lineUp.finalScore = Number(
-          (x.lineUp.RB.pprScore + x.lineUp.WR.pprScore).toFixed(2)
-        ))
-    );
+    entryList.map((x) => {
+      const total = Number(
+        (x.lineUp.RB.pprScore + x.lineUp.WR.pprScore).toFixed(2)
+      );
+      x.lineUp.finalScore = total;
+      x.finalScore = total;
+      return x;
+    });
 
     for (const entry of entryList) {
       const docRef = doc(
@@ -107,6 +110,7 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
       await setDoc(docRef, {
         name: entry.name || entry.id,
         lineUp: entry.lineUp,
+        finalScore: entry.finalScore,
       });
     }
   };
@@ -135,9 +139,9 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
                 )}
                 {memberLabel(entry.id)}
               </td>
-              <td>{entry.lineUp.RB.name}</td>
-              <td>{entry.lineUp.WR.name}</td>
-              <td>{entry.lineUp.finalScore ?? ""}</td>
+              <td>{entry.lineUp?.RB?.name ?? ""}</td>
+              <td>{entry.lineUp?.WR?.name ?? ""}</td>
+              <td>{entry.finalScore ?? ""}</td>
             </tr>
           ))}
         </tbody>
