@@ -32,6 +32,7 @@ const Game = ({ uid, onComplete }) => {
     RB: { name: "awaiting game..." },
     WR: { name: "awaiting game..." },
   })
+  const [resetUsed, setResetUsed] = useState({ RB: false, WR: false })
 
   useEffect(() => {
     const fetchName = async () => {
@@ -108,10 +109,14 @@ const Game = ({ uid, onComplete }) => {
     }
   }
 
-  const resetGame = () => {
+  const resetGame = (pos = type, consume = true) => {
+    if (consume && (caseSelected || resetUsed[pos])) return
+    if (consume) {
+      setResetUsed(prev => ({ ...prev, [pos]: true }))
+    }
     setReset(true)
     setMidway(false)
-    setLineUp(prev => ({ ...prev, [type]: { name: "awaiting game..." } }))
+    setLineUp(prev => ({ ...prev, [pos]: { name: "awaiting game..." } }))
   }
   
   const removeCases = (arr, n) => {
@@ -279,7 +284,7 @@ const Game = ({ uid, onComplete }) => {
     setPool([])
     setType("WR")
     setLimit(95)
-    resetGame()
+    resetGame("WR", false)
     setFinished(true)
   }
 
@@ -463,7 +468,7 @@ const Game = ({ uid, onComplete }) => {
           <div className="action-buttons">
             <button className="btn" onClick={acceptOffer}>Accept</button> 
             <button className="btn" onClick={declineOffer}>Decline</button>
-            <button className="btn" onClick={resetGame}>Reset</button>
+            <button className="btn" onClick={resetGame} disabled={caseSelected !== null || resetUsed[type]}>Reset</button>
           </div>
         </div>
       )
@@ -477,7 +482,7 @@ const Game = ({ uid, onComplete }) => {
           <div className="action-buttons">
             <button className="btn" onClick={keep}>Keep</button>
             <button className="btn" onClick={swap}>Swap</button>
-            <button className="btn" onClick={resetGame}>Reset</button>
+            <button className="btn" onClick={resetGame} disabled={caseSelected !== null || resetUsed[type]}>Reset</button>
           </div>
         </div>
       )
@@ -489,7 +494,7 @@ const Game = ({ uid, onComplete }) => {
             <p>Congratulations!! Your player is {caseSelected.name}. His projected points are {caseSelected.points}</p>
           </div>
           <div className="action-buttons">
-            <button className="btn" onClick={resetGame}>Reset</button>
+            <button className="btn" onClick={resetGame} disabled={caseSelected !== null || resetUsed[type]}>Reset</button>
             {midway ? (finished ? <button className="btn" onClick={submitLineup}>Submit Lineup</button> : <button className="btn" onClick={swapPosition}>Switch Position Group</button>) : null}
           </div>
         </div>
@@ -497,7 +502,7 @@ const Game = ({ uid, onComplete }) => {
     } else {
       return (
         <div className="action-buttons">
-            <button className="btn" onClick={resetGame}>Reset</button>
+            <button className="btn" onClick={resetGame} disabled={caseSelected !== null || resetUsed[type]}>Reset</button>
             {midway ? (finished ? <button className="btn" onClick={submitLineup}>Submit Lineup</button> : <button className="btn" onClick={swapPosition}>Switch Position Group</button>) : null}
           </div>
       )
