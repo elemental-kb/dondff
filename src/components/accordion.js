@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Contestants from './contestants';
+import Entries from './entries';
 
 const Accordion = ({ doc, leagueId, season, actualWeek }) => {
   const [isActive, setIsActive] = useState(false);
@@ -10,9 +10,16 @@ const Accordion = ({ doc, leagueId, season, actualWeek }) => {
         <div>Week {doc.week}</div>
         <div>{isActive ? '-' : '+'}</div>
       </div>
-      {isActive && <div className="accordion-content">
-        <Contestants leagueId={leagueId} season={season} week={doc.week} actualWeek={actualWeek} />
-      </div>}
+      {isActive && (
+        <div className="accordion-content">
+          <Entries
+            leagueId={leagueId}
+            season={season}
+            week={doc.week}
+            actualWeek={actualWeek}
+          />
+        </div>
+      )}
     </div>
   );
 };
