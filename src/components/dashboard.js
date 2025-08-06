@@ -94,7 +94,7 @@ const Dashboard = () => {
       }
     );
 
-    return () => unsub();
+    return () => unsub && unsub();
   }, [user]);
 
   const logout = async () => {
