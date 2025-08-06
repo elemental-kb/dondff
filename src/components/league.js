@@ -4,6 +4,7 @@ import { auth, db } from "../firebase-config";
 import { doc, onSnapshot } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import Seasons from "./seasons";
+import Breadcrumbs from "./breadcrumbs";
 
 const League = () => {
 
@@ -53,37 +54,33 @@ const League = () => {
 
   return (
     <div className="league-panel">
+      <Breadcrumbs
+        items={[
+          { label: "Dashboard", to: "/dashboard" },
+          { label: league.name },
+        ]}
+      />
       <h2>{league.name}</h2>
-
-      {member?.role === "admin" && (
-        <div>
-          <p>Access Code: {league.accessCode}</p>
-          <p>URL: /league/{leagueId}</p>
-          <h4>Seasons:</h4>
-          <Seasons league={league} leagueId={leagueId} leagueRef={leagueRef} />
-        </div>
-      )}
-
+      <p>Access Code: {league.accessCode}</p>
       {member?.role === "player" && (
-        <div>
-          <p>Access Code: {league.accessCode}</p>
-          <p>Lineup Status: {member.lineupStatus || "Not set"}</p>
-          {league.currentSeason && league.currentWeek && (
-            <Link
-              to="/game/setting-lineups"
-              state={{
-                leagueId: leagueId,
-                season: league.currentSeason,
-                week: league.currentWeek,
-              }}
-            >
-              <button>Go To Weekly Game</button>
-            </Link>
-          )}
-        </div>
+        <p>Lineup Status: {member.lineupStatus || "Not set"}</p>
+      )}
+      <h4>Seasons:</h4>
+      <Seasons leagueId={leagueId} />
+      {member?.role === "player" && league.currentSeason && league.currentWeek && (
+        <Link
+          to="/game/setting-lineups"
+          state={{
+            leagueId: leagueId,
+            season: league.currentSeason,
+            week: league.currentWeek,
+          }}
+        >
+          <button>Go To Weekly Game</button>
+        </Link>
       )}
     </div>
-  )
-}
+  );
+};
 
-  export default League
+export default League;
