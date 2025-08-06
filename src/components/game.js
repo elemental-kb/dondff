@@ -4,12 +4,12 @@ import { auth, db } from "../firebase-config";
 import { doc, setDoc } from "firebase/firestore";
 import { getPlayers, generateCases } from './util';
 
-const Game = () => {
+const Game = ({ uid, onComplete }) => {
 
 
   const { leagueId, season, week } = useLocation().state
-  const user = auth.currentUser
   const navigate = useNavigate()
+  const currentUid = uid || auth.currentUser?.uid
 
   const [cases, setCases] = useState(null)
   const [caseSelected, setCaseSelected] = useState(null)
@@ -263,12 +263,16 @@ const Game = () => {
   }
 
   const submitLineup = async () => {
-    const docRef = doc(db, "leagues", leagueId, "seasons", season, "weeks", week, "entries", user.uid)
+    const docRef = doc(db, "leagues", leagueId, "seasons", season, "weeks", week, "entries", currentUid)
     await setDoc(docRef, {
-      name: user.uid,
+      name: currentUid,
       lineUp: lineUp
     })
-    navigate(-1)
+    if(onComplete) {
+      onComplete()
+    } else {
+      navigate(-1)
+    }
   }
 
 
@@ -483,7 +487,7 @@ const Game = () => {
 
   return (
     <>
-      <h3>Current User: {user?.uid}</h3>
+      <h3>Current User: {currentUid}</h3>
       <div className="game">
         <div className="board">
           {render()}
@@ -495,7 +499,7 @@ const Game = () => {
       </div>
       <div className="contestant-flexbox">
         <div className="contestant-card">
-          <p>{user?.uid}</p>
+          <p>{currentUid}</p>
           <p><b>RB:</b> {lineUp.RB.name}</p>
           <p><b>WR:</b> {lineUp.WR.name}</p>
         </div>

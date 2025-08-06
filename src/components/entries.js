@@ -161,7 +161,7 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
             leagueId: leagueId,
             season: season,
             week: week,
-            uids: selectedUids,
+            participants: selectedUids,
           }}
         >
           <button disabled={selectedUids.length === 0}>Start Group Game</button>
