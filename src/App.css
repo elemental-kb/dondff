@@ -160,24 +160,6 @@ select {
   }
 }
 
-/* dashboard panel */
-.dashboard {
-  text-align: left;
-  background-color: rgba(58, 70, 91, 0.5);
-  padding: 8px;
-}
-
-.league-panel {
-    text-align: left;
-    background-color: rgba(58, 70, 91, 0.5);
-    padding: 8px;
-}
-
-.accordion {
-  max-width: 90%;
-  margin: 2rem auto;
-}
-
 .accordion-title {
   display: flex;
   flex-direction: row;
@@ -199,13 +181,6 @@ select {
   background-color: rgba(0,206,184,0.1);
 }
 
-@media screen and (max-width: 700px) {
-
-  .accordion {
-    width: 90%;
-  }
-}
-
 .contestant-flexbox {
   display: flex;
   flex-direction: row;
@@ -222,10 +197,6 @@ select {
   width: 30%;
   border: 2px solid #3ab4cc;
   padding: 6px;
-}
-
-.single-form {
-  margin-top: 10px;
 }
 
 button {

@@ -66,7 +66,7 @@ const Weeks = () => {
   }, []);
 
   return (
-    <div className="week-container">
+    <div className="max-w-4xl mx-auto p-4 space-y-4 text-left bg-[#3a465b]/50 rounded">
       <Breadcrumbs
         items={[
           { label: "Dashboard", to: "/dashboard" },
@@ -75,7 +75,7 @@ const Weeks = () => {
         ]}
       />
       {loading && "Loading..."}
-      <div className="accordion">
+      <div className="space-y-4 max-w-[90%] mx-auto">
         {docs?.map((weekDoc) => (
           <Accordion
             key={weekDoc.week}
@@ -86,10 +86,14 @@ const Weeks = () => {
           />
         ))}
       </div>
-      <div className="add-week-form">
-        <label>
+      <div className="flex items-center gap-2 mt-4">
+        <label className="flex items-center gap-2">
           select NFL week:
-          <select value={week} onChange={(e) => setWeek(e.target.value)}>
+          <select
+            className="p-1 bg-transparent border rounded border-[#3a465b]"
+            value={week}
+            onChange={(e) => setWeek(e.target.value)}
+          >
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -110,7 +114,12 @@ const Weeks = () => {
             <option value="18">18</option>
           </select>
         </label>
-        <button onClick={addWeek}>Add Week</button>
+        <button
+          className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+          onClick={addWeek}
+        >
+          Add Week
+        </button>
       </div>
       <div>Current NFL Week: {actualNFLWeek}</div>
     </div>
