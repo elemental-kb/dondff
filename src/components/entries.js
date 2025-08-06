@@ -27,7 +27,7 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
     return member?.uid || id;
   };
 
-  const hasEntry = entries?.some((entry) => entry.id === user?.uid);
+  const hasEntry = !!entries?.some((entry) => entry.id === user?.uid);
 
   const currentMember = members?.find((m) => m.id === user?.uid);
   const isAdmin = currentMember?.role === "admin";
@@ -142,7 +142,7 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
           ))}
         </tbody>
       </table>
-      {!hasEntry && user && (
+      {entries && !hasEntry && user && (
         <Link
           to="/game/setting-lineups"
           state={{
