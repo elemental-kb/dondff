@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { auth, db } from "../firebase-config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import Breadcrumbs from "./breadcrumbs";
 import {
   addDoc,
   collection,
@@ -108,6 +109,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
+      <Breadcrumbs items={[{ label: "Dashboard" }]} />
       <h2>Welcome to Your Dashboard</h2>
       <h3>{user.email}</h3>
       <button onClick={logout}>Sign Out</button>

@@ -1,24 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { db } from "../firebase-config";
-import {
-  addDoc,
-  arrayRemove,
-  arrayUnion,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  onSnapshot,
-  updateDoc,
-  setDoc,
-} from "firebase/firestore";
+import { collection, doc, onSnapshot, setDoc } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import Accordion from "./accordion";
+import Breadcrumbs from "./breadcrumbs";
 
-const Weeks = ({ leagueId, season }) => {
+const Weeks = () => {
+  const { leagueId, season } = useParams();
   const [week, setWeek] = useState("1");
   const [actualNFLWeek, setActualNFLWeek] = useState(null);
-  const [weekIsActive, setWeekIsActive] = useState(false);
+  const [leagueName, setLeagueName] = useState("");
 
   const leagueCollection = collection(
     db,
@@ -28,7 +20,15 @@ const Weeks = ({ leagueId, season }) => {
     season,
     "weeks"
   );
-  const [docs, loading, error] = useCollectionData(leagueCollection);
+  const [docs, loading] = useCollectionData(leagueCollection);
+
+  useEffect(() => {
+    const leagueRef = doc(db, "leagues", leagueId);
+    const unsub = onSnapshot(leagueRef, (snap) => {
+      setLeagueName(snap.data()?.name || "");
+    });
+    return () => unsub();
+  }, [leagueId]);
 
   const getActualWeek = async () => {
     try {
@@ -42,10 +42,17 @@ const Weeks = ({ leagueId, season }) => {
     }
   };
 
-  const addWeek = async (e) => {
+  const addWeek = async () => {
     try {
-      await setWeek(e.target.value);
-      const docRef = doc(db, "leagues", leagueId, "seasons", season, "weeks", week);
+      const docRef = doc(
+        db,
+        "leagues",
+        leagueId,
+        "seasons",
+        season,
+        "weeks",
+        week
+      );
       await setDoc(docRef, {
         week: week,
       });
@@ -60,12 +67,19 @@ const Weeks = ({ leagueId, season }) => {
 
   return (
     <div className="week-container">
+      <Breadcrumbs
+        items={[
+          { label: "Dashboard", to: "/dashboard" },
+          { label: leagueName, to: `/league/${leagueId}` },
+          { label: `Season ${season}` },
+        ]}
+      />
       {loading && "Loading..."}
       <div className="accordion">
-        {docs?.map((doc) => (
+        {docs?.map((weekDoc) => (
           <Accordion
-            key={doc.week}
-            doc={doc}
+            key={weekDoc.week}
+            weekDoc={weekDoc}
             leagueId={leagueId}
             season={season}
             actualWeek={actualNFLWeek}

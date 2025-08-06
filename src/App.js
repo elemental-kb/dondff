@@ -8,6 +8,7 @@ import Dashboard from './components/dashboard';
 import League from './components/league';
 import Game from './components/game';
 import GroupGame from './components/groupGame';
+import Weeks from './components/weeks';
 
 
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="/login" element={<SignUp />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/league/:leagueId" element={<League />} />
+          <Route path="/league/:leagueId/season/:season" element={<Weeks />} />
           <Route path="/game/group" element={<GroupGame />} />
           <Route path="/game/:type" element={<Game />} />
           <Route path="*" element={<Error />} />
