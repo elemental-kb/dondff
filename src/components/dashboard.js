@@ -38,7 +38,12 @@ const Dashboard = () => {
       });
 
       const memberRef = doc(db, "leagues", newLeagueRef.id, "members", user.uid);
-      await setDoc(memberRef, { uid: user.uid, role: "admin" });
+      await setDoc(memberRef, {
+        uid: user.uid,
+        role: "admin",
+        displayName: user.displayName,
+        email: user.email,
+      });
 
       navigate(`/league/${newLeagueRef.id}`);
     } catch (error) {
@@ -53,7 +58,12 @@ const Dashboard = () => {
       if (!querySnapshot.empty) {
         const leagueDoc = querySnapshot.docs[0];
         const memberRef = doc(db, "leagues", leagueDoc.id, "members", user.uid);
-        await setDoc(memberRef, { uid: user.uid, role: "player" });
+        await setDoc(memberRef, {
+          uid: user.uid,
+          role: "player",
+          displayName: user.displayName,
+          email: user.email,
+        });
       }
     } catch (error) {
       console.log(error.message);

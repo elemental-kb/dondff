@@ -50,7 +50,7 @@ onSnapshot.mockReturnValue(() => {});
 doc.mockReturnValue('memberRef');
 
 test('creates league and adds owner as admin', async () => {
-  const mockUser = { uid: 'user123' };
+  const mockUser = { uid: 'user123', displayName: 'User One', email: 'user1@example.com' };
   uuidv4.mockReturnValue('access-code');
   addDoc.mockResolvedValue({ id: 'league123' });
   setDoc.mockResolvedValue();
@@ -86,13 +86,15 @@ test('creates league and adds owner as admin', async () => {
   expect(setDoc.mock.calls[0][1]).toEqual({
     uid: mockUser.uid,
     role: 'admin',
+    displayName: mockUser.displayName,
+    email: mockUser.email,
   });
 });
 
 test('joins league and adds user as player when access code matches', async () => {
   jest.clearAllMocks();
   doc.mockReturnValue('memberRef');
-  const mockUser = { uid: 'user123' };
+  const mockUser = { uid: 'user123', displayName: 'User One', email: 'user1@example.com' };
   onAuthStateChanged.mockImplementation((auth, callback) => {
     callback(mockUser);
     return () => {};
@@ -121,6 +123,8 @@ test('joins league and adds user as player when access code matches', async () =
     expect(setDoc).toHaveBeenCalledWith('memberRef', {
       uid: mockUser.uid,
       role: 'player',
+      displayName: mockUser.displayName,
+      email: mockUser.email,
     });
   });
 });

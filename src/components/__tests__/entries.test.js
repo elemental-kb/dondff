@@ -14,6 +14,7 @@ jest.mock('react-firebase-hooks/firestore', () => ({
 }));
 
 const { render, screen, waitFor } = require('@testing-library/react');
+require('@testing-library/jest-dom');
 const userEvent = require('@testing-library/user-event').default;
 const { MemoryRouter } = require('react-router-dom');
 const { setDoc, doc } = require('firebase/firestore');
@@ -77,4 +78,31 @@ test('calculateScores sums player scores and persists finalScore', async () => {
       finalScore: entry.finalScore,
     });
   });
+});
+
+test('memberLabel prioritizes displayName then email then id', () => {
+  const entriesData = [
+    { id: 'user1', lineUp: {} },
+    { id: 'user2', lineUp: {} },
+    { id: 'user3', lineUp: {} },
+  ];
+  const members = [
+    { id: 'user1', uid: 'user1', displayName: 'Display One', email: 'one@example.com' },
+    { id: 'user2', uid: 'user2', email: 'two@example.com' },
+    { id: 'user3', uid: 'user3' },
+  ];
+
+  useCollectionData
+    .mockReturnValueOnce([entriesData])
+    .mockReturnValueOnce([members]);
+
+  render(
+    <MemoryRouter>
+      <Entries leagueId="league1" season="2023" week="1" actualWeek={1} />
+    </MemoryRouter>
+  );
+
+  expect(screen.getByText('Display One')).toBeInTheDocument();
+  expect(screen.getByText('two@example.com')).toBeInTheDocument();
+  expect(screen.getByText('user3')).toBeInTheDocument();
 });
