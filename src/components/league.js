@@ -5,6 +5,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import Seasons from "./seasons";
 import Breadcrumbs from "./breadcrumbs";
+import LeagueStats from "./leagueStats";
 
 const League = () => {
 
@@ -67,6 +68,7 @@ const League = () => {
       )}
       <h4 className="text-lg font-semibold">Seasons:</h4>
       <Seasons leagueId={leagueId} />
+      <LeagueStats leagueId={leagueId} league={league} />
       {member?.role === "player" && league.currentSeason && league.currentWeek && (
         <Link
           to="/game/setting-lineups"
