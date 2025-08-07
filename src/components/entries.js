@@ -24,7 +24,12 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
 
   const memberLabel = (id) => {
     const member = members?.find((m) => m.id === id);
-    return member?.uid || id;
+    return (
+      member?.displayName ||
+      member?.email ||
+      member?.uid ||
+      id
+    );
   };
 
   const hasEntry = !!entries?.some((entry) => entry.id === user?.uid);
