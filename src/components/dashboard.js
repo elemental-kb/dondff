@@ -118,7 +118,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-4 text-left bg-[#3a465b]/50 rounded">
+    <div className="mx-auto p-4 space-y-4 text-left bg-[#3a465b]/50 rounded">
       <Breadcrumbs items={[{ label: "Dashboard" }]} />
       <h2 className="text-2xl font-bold">Welcome to Your Dashboard</h2>
       <h3 className="text-xl">{user.email}</h3>
