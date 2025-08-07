@@ -125,42 +125,44 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
 
   return (
     <div className="space-y-4">
-      <table className="w-full text-left border border-[#3a465b]">
-        <thead className="bg-[#3a465b]">
-          <tr>
-            <th className="p-2 border-b border-[#3a465b]">Member</th>
-            <th className="p-2 border-b border-[#3a465b]">RB</th>
-            <th className="p-2 border-b border-[#3a465b]">RB Projection</th>
-            <th className="p-2 border-b border-[#3a465b]">WR</th>
-            <th className="p-2 border-b border-[#3a465b]">WR Projection</th>
-            <th className="p-2 border-b border-[#3a465b]">Projected Total</th>
-            <th className="p-2 border-b border-[#3a465b]">Final Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortedEntries.map((entry) => (
-            <tr key={entry.id} className="odd:bg-[#3a465b]/20">
-              <td className="p-2 border-b border-[#3a465b]">
-                {isAdmin && (
-                  <input
-                    type="checkbox"
-                    className="mr-2"
-                    checked={selectedUids.includes(entry.id)}
-                    onChange={() => toggleUid(entry.id)}
-                  />
-                )}
-                {memberLabel(entry.id)}
-              </td>
-              <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.RB?.name ?? ""}</td>
-              <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.RB?.points ?? 0}</td>
-              <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.WR?.name ?? ""}</td>
-              <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.WR?.points ?? 0}</td>
-              <td className="p-2 border-b border-[#3a465b]">{projectedTotal(entry)}</td>
-              <td className="p-2 border-b border-[#3a465b]">{entry.finalScore ?? ""}</td>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-left border border-[#3a465b]">
+          <thead className="bg-[#3a465b]">
+            <tr>
+              <th className="p-2 border-b border-[#3a465b]">Member</th>
+              <th className="p-2 border-b border-[#3a465b]">RB</th>
+              <th className="p-2 border-b border-[#3a465b]">RB Projection</th>
+              <th className="p-2 border-b border-[#3a465b]">WR</th>
+              <th className="p-2 border-b border-[#3a465b]">WR Projection</th>
+              <th className="p-2 border-b border-[#3a465b]">Projected Total</th>
+              <th className="p-2 border-b border-[#3a465b]">Final Score</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {sortedEntries.map((entry) => (
+              <tr key={entry.id} className="odd:bg-[#3a465b]/20">
+                <td className="p-2 border-b border-[#3a465b]">
+                  {isAdmin && (
+                    <input
+                      type="checkbox"
+                      className="mr-2"
+                      checked={selectedUids.includes(entry.id)}
+                      onChange={() => toggleUid(entry.id)}
+                    />
+                  )}
+                  {memberLabel(entry.id)}
+                </td>
+                <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.RB?.name ?? ""}</td>
+                <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.RB?.points ?? 0}</td>
+                <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.WR?.name ?? ""}</td>
+                <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.WR?.points ?? 0}</td>
+                <td className="p-2 border-b border-[#3a465b]">{projectedTotal(entry)}</td>
+                <td className="p-2 border-b border-[#3a465b]">{entry.finalScore ?? ""}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       {entries && !hasEntry && user && (
         <Link
           to="/game/setting-lineups"
