@@ -50,6 +50,9 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
     ? [...entries].sort((a, b) => (b.finalScore || 0) - (a.finalScore || 0))
     : [];
 
+  const projectedTotal = (entry) =>
+    (entry.lineUp?.RB?.points ?? 0) + (entry.lineUp?.WR?.points ?? 0);
+
   const calculateScores = async () => {
     if (!entries) return;
     const rbUrl = `https://api.sleeper.com/stats/nfl/${season}/${week}?season_type=regular&position=RB&order_by=pts_ppr`;
@@ -127,7 +130,10 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
           <tr>
             <th className="p-2 border-b border-[#3a465b]">Member</th>
             <th className="p-2 border-b border-[#3a465b]">RB</th>
+            <th className="p-2 border-b border-[#3a465b]">RB Projection</th>
             <th className="p-2 border-b border-[#3a465b]">WR</th>
+            <th className="p-2 border-b border-[#3a465b]">WR Projection</th>
+            <th className="p-2 border-b border-[#3a465b]">Projected Total</th>
             <th className="p-2 border-b border-[#3a465b]">Final Score</th>
           </tr>
         </thead>
@@ -146,7 +152,10 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
                 {memberLabel(entry.id)}
               </td>
               <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.RB?.name ?? ""}</td>
+              <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.RB?.points ?? 0}</td>
               <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.WR?.name ?? ""}</td>
+              <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.WR?.points ?? 0}</td>
+              <td className="p-2 border-b border-[#3a465b]">{projectedTotal(entry)}</td>
               <td className="p-2 border-b border-[#3a465b]">{entry.finalScore ?? ""}</td>
             </tr>
           ))}
