@@ -106,3 +106,36 @@ test('memberLabel prioritizes displayName then email then id', () => {
   expect(screen.getByText('two@example.com')).toBeInTheDocument();
   expect(screen.getByText('user3')).toBeInTheDocument();
 });
+
+test('renders projection columns and values', () => {
+  const entriesData = [
+    {
+      id: 'user1',
+      lineUp: {
+        RB: { name: 'RB1', points: 12 },
+        WR: { name: 'WR1', points: 8 },
+      },
+    },
+  ];
+  const members = [
+    { id: 'user1', uid: 'user1', displayName: 'User One' },
+    { id: 'admin1', uid: 'admin1', role: 'admin' },
+  ];
+
+  useCollectionData
+    .mockReturnValueOnce([entriesData])
+    .mockReturnValueOnce([members]);
+
+  render(
+    <MemoryRouter>
+      <Entries leagueId="league1" season="2023" week="1" actualWeek={1} />
+    </MemoryRouter>
+  );
+
+  expect(screen.getByText('RB Projection')).toBeInTheDocument();
+  expect(screen.getByText('WR Projection')).toBeInTheDocument();
+  expect(screen.getByText('Projected Total')).toBeInTheDocument();
+  expect(screen.getByText('12')).toBeInTheDocument();
+  expect(screen.getByText('8')).toBeInTheDocument();
+  expect(screen.getByText('20')).toBeInTheDocument();
+});
