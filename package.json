@@ -1,6 +1,12 @@
 {
   "name": "ff-deal-or-no-deal",
   "version": "0.1.0",
+  "description": "Fantasy Football Deal or No Deal app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/<org>/dondff.git"
+  },
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
