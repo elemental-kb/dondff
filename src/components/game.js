@@ -109,14 +109,15 @@ const Game = ({ uid, onComplete }) => {
     }
   }
 
-  const resetGame = (pos = type, consume = true) => {
-    if (consume && (caseSelected || resetUsed[pos])) return
+  const resetGame = (consume = true) => {
+    if (consume && (caseSelected || resetUsed[type])) return
     if (consume) {
-      setResetUsed(prev => ({ ...prev, [pos]: true }))
+      resetUsed[type] = true;
+      setResetUsed(resetUsed);
     }
     setReset(true)
     setMidway(false)
-    setLineUp(prev => ({ ...prev, [pos]: { name: "awaiting game..." } }))
+    setLineUp(prev => ({ ...prev, [type]: { name: "awaiting game..." } }))
   }
   
   const removeCases = (arr, n) => {
@@ -284,7 +285,7 @@ const Game = ({ uid, onComplete }) => {
     setPool([])
     setType("WR")
     setLimit(95)
-    resetGame("WR", false)
+    resetGame(false)
     setFinished(true)
   }
 
