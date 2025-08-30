@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { db } from "../firebase-config";
+import {auth, db} from "../firebase-config";
 import { collection, doc, onSnapshot, setDoc } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import Accordion from "./accordion";
@@ -11,6 +11,7 @@ const Weeks = () => {
   const [week, setWeek] = useState("1");
   const [actualNFLWeek, setActualNFLWeek] = useState(null);
   const [leagueName, setLeagueName] = useState("");
+  const user = auth.currentUser;
 
   const leagueCollection = collection(
     db,
@@ -21,6 +22,11 @@ const Weeks = () => {
     "weeks"
   );
   const [docs, loading] = useCollectionData(leagueCollection);
+
+  const membersCollection = collection(db, "leagues", leagueId, "members");
+  const [members] = useCollectionData(membersCollection, { idField: "id" });
+  const currentMember = members?.find((m) => m.uid === user?.uid);
+  const isAdmin = currentMember?.role === "admin";
 
   useEffect(() => {
     const leagueRef = doc(db, "leagues", leagueId);
@@ -86,6 +92,7 @@ const Weeks = () => {
           />
         ))}
       </div>
+      { isAdmin && (
       <div className="flex items-center gap-2 mt-4">
         <label className="flex items-center gap-2">
           select NFL week:
@@ -121,6 +128,7 @@ const Weeks = () => {
           Add Week
         </button>
       </div>
+      )}
       <div>Current NFL Week: {actualNFLWeek}</div>
     </div>
   );
