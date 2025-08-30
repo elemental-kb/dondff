@@ -12,14 +12,7 @@ const Weeks = () => {
   const [actualNFLWeek, setActualNFLWeek] = useState(null);
   const [leagueName, setLeagueName] = useState("");
 
-  const leagueCollection = collection(
-    db,
-    "leagues",
-    leagueId,
-    "seasons",
-    season,
-    "weeks"
-  );
+  const leagueCollection = collection(db, "leagues", leagueId, "seasons", season, "weeks");
   const [docs, loading] = useCollectionData(leagueCollection);
 
   useEffect(() => {
@@ -44,15 +37,7 @@ const Weeks = () => {
 
   const addWeek = async () => {
     try {
-      const docRef = doc(
-        db,
-        "leagues",
-        leagueId,
-        "seasons",
-        season,
-        "weeks",
-        week
-      );
+      const docRef = doc(db, "leagues", leagueId, "seasons", season, "weeks", week);
       await setDoc(docRef, {
         week: week,
       });
@@ -76,7 +61,7 @@ const Weeks = () => {
       />
       {loading && "Loading..."}
       <div className="space-y-4 max-w-[90%] mx-auto">
-        {docs?.map((weekDoc) => (
+        {docs?.sort((a, b) => a.week - b.week).map((weekDoc) => (
           <Accordion
             key={weekDoc.week}
             weekDoc={weekDoc}
