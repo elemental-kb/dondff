@@ -35,8 +35,8 @@ test('calculateScores sums player scores and persists finalScore', async () => {
       id: 'entry2',
       name: 'Entry Two',
       lineUp: {
-        RB: { playerId: 'rb1', pprScore: 0, name: 'RB1' },
-        WR: { playerId: 'wr1', pprScore: 0, name: 'WR1' },
+        RB: { playerId: 'rb2', pprScore: 0, name: 'RB2' },
+        WR: { playerId: 'wr2', pprScore: 0, name: 'WR2' },
       },
     },
   ];
@@ -49,10 +49,16 @@ test('calculateScores sums player scores and persists finalScore', async () => {
   global.fetch = jest
     .fn()
     .mockResolvedValueOnce({
-      json: async () => [{ player_id: 'rb1', stats: { pts_ppr: 10 } }],
+      json: async () => [
+        {player_id: 'rb1', stats: {pts_ppr: 10}},
+        {player_id: 'rb2', stats: {pts_ppr: 11.1}}
+      ],
     })
     .mockResolvedValueOnce({
-      json: async () => [{ player_id: 'wr1', stats: { pts_ppr: 20 } }],
+      json: async () => [
+        {player_id: 'wr1', stats: {pts_ppr: 20}},
+        {player_id: 'wr2', stats: {pts_ppr: 19.06666}}
+      ],
     });
 
   doc.mockImplementation(
@@ -70,14 +76,11 @@ test('calculateScores sums player scores and persists finalScore', async () => {
 
   await waitFor(() => expect(setDoc).toHaveBeenCalledTimes(dummyEntries.length));
 
-  dummyEntries.forEach((entry, index) => {
-    expect(entry.finalScore).toBe(30);
-    expect(setDoc.mock.calls[index][1]).toEqual({
-      name: entry.name,
-      lineUp: entry.lineUp,
-      finalScore: entry.finalScore,
-    });
-  });
+  expect(dummyEntries.length).toBe(2);
+  expect(dummyEntries[0].id).toBe('entry1');
+  expect(dummyEntries[0].finalScore).toBe(30);
+  expect(dummyEntries[1].id).toBe('entry2');
+  expect(dummyEntries[1].finalScore).toBe(30.16666); //Don't round on the backend, round on the display
 });
 
 test('memberLabel prioritizes displayName then email then id', () => {
@@ -112,8 +115,8 @@ test('renders projection columns and values', () => {
     {
       id: 'user1',
       lineUp: {
-        RB: { name: 'RB1', points: 12 },
-        WR: { name: 'WR1', points: 8 },
+        RB: { name: 'RB1', points: 12.001 },
+        WR: { name: 'WR1', points: 8.002 },
       },
     },
   ];

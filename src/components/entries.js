@@ -4,26 +4,21 @@ import { collection, doc, setDoc } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { Link } from "react-router-dom";
 
+function roundToTwo(number) {
+  return Math.round(number * 100) / 100;
+}
+
 const Entries = ({ leagueId, season, week, actualWeek }) => {
   const user = auth.currentUser;
 
-  const entriesCollection = collection(
-    db,
-    "leagues",
-    leagueId,
-    "seasons",
-    season,
-    "weeks",
-    week,
-    "entries"
-  );
+  const entriesCollection = collection(db, "leagues", leagueId, "seasons", season, "weeks", week, "entries");
   const [entries] = useCollectionData(entriesCollection, { idField: "id" });
 
   const membersCollection = collection(db, "leagues", leagueId, "members");
   const [members] = useCollectionData(membersCollection, { idField: "id" });
 
   const memberLabel = (id) => {
-    const member = members?.find((m) => m.id === id);
+    const member = members?.find((member) => member.id === id);
     return (
       member?.displayName ||
       member?.email ||
@@ -34,7 +29,7 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
 
   const hasEntry = !!entries?.some((entry) => entry.id === user?.uid);
 
-  const currentMember = members?.find((m) => m.id === user?.uid);
+  const currentMember = members?.find((member) => member.id === user?.uid);
   const isAdmin = currentMember?.role === "admin";
   const [selectedUids, setSelectedUids] = useState([]);
 
@@ -63,58 +58,23 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
     const wrJson = await wrResponse.json();
     const finalStats = [...rbJson, ...wrJson];
 
-    let playerIds = [];
-    for (let i = 0; i < entries.length; i++) {
-      const rbId = entries[i].lineUp?.RB?.playerId;
-      const wrId = entries[i].lineUp?.WR?.playerId;
-      if (rbId) playerIds.push(rbId);
-      if (wrId) playerIds.push(wrId);
-    }
-
-    let entryList = [];
-    entries.forEach((doc) => {
-      entryList.push(doc);
+    // Set PPR scores on the entries
+    // Doing this mutably isn't great, but I don't understand the code well enough to refactor more
+    entries.forEach((entry) => {
+      const rbId = entry.lineUp?.RB?.playerId;
+      const wrId = entry.lineUp?.WR?.playerId;
+      const rb = finalStats.find((player) => player.player_id === rbId);
+      const wr = finalStats.find((player) => player.player_id === wrId);
+      entry.lineUp.RB.pprScore = rb && rb.stats.pts_ppr ? rb.stats.pts_ppr : 0.0;
+      entry.lineUp.WR.pprScore = wr && wr.stats.pts_ppr ? wr.stats.pts_ppr : 0.0;
+      let finalScore = entry.lineUp.RB.pprScore + entry.lineUp.WR.pprScore;
+      entry.lineUp.finalScore = finalScore;
+      entry.finalScore = finalScore;
     });
 
-    for (let i = 0; i < playerIds.length; i++) {
-      let player = finalStats.find((p) => p.player_id === playerIds[i]);
-      let pprScore = 0.0;
-      if (player && player.stats.pts_ppr) {
-        pprScore = player.stats.pts_ppr;
-      }
-      entryList.map((x) =>
-        x.lineUp.RB.playerId === playerIds[i]
-          ? (x.lineUp.RB.pprScore = pprScore)
-          : x
-      );
-      entryList.map((x) =>
-        x.lineUp.WR.playerId === playerIds[i]
-          ? (x.lineUp.WR.pprScore = pprScore)
-          : x
-      );
-    }
+    for (const entry of entries) {
+      const docRef = doc(db, "leagues", leagueId, "seasons", season, "weeks", week, "entries", entry.id);
 
-    entryList.map((x) => {
-      const total = Number(
-        (x.lineUp.RB.pprScore + x.lineUp.WR.pprScore).toFixed(2)
-      );
-      x.lineUp.finalScore = total;
-      x.finalScore = total;
-      return x;
-    });
-
-    for (const entry of entryList) {
-      const docRef = doc(
-        db,
-        "leagues",
-        leagueId,
-        "seasons",
-        season,
-        "weeks",
-        week,
-        "entries",
-        entry.id
-      );
       await setDoc(docRef, {
         name: entry.name || entry.id,
         lineUp: entry.lineUp,
@@ -153,11 +113,11 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
                   {memberLabel(entry.id)}
                 </td>
                 <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.RB?.name ?? ""}</td>
-                <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.RB?.points ?? 0}</td>
+                <td className="p-2 border-b border-[#3a465b]">{roundToTwo(entry.lineUp?.RB?.points) ?? 0}</td>
                 <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.WR?.name ?? ""}</td>
-                <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.WR?.points ?? 0}</td>
-                <td className="p-2 border-b border-[#3a465b]">{projectedTotal(entry)}</td>
-                <td className="p-2 border-b border-[#3a465b]">{entry.finalScore ?? ""}</td>
+                <td className="p-2 border-b border-[#3a465b]">{roundToTwo(entry.lineUp?.WR?.points) ?? 0}</td>
+                <td className="p-2 border-b border-[#3a465b]">{roundToTwo(projectedTotal(entry))}</td>
+                <td className="p-2 border-b border-[#3a465b]">{entry.finalScore ? roundToTwo(entry.finalScore) : ""}</td>
               </tr>
             ))}
           </tbody>
