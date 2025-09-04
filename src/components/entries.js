@@ -27,7 +27,7 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
     );
   };
 
-  const hasEntry = !!entries?.some((entry) => entry.id === user?.uid);
+  const hasEntry = !!entries?.some((entry) => entry.name === user?.email);
 
   const currentMember = members?.find((member) => member.id === user?.uid);
   const isAdmin = currentMember?.role === "admin";
