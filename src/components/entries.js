@@ -17,19 +17,19 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
   const membersCollection = collection(db, "leagues", leagueId, "members");
   const [members] = useCollectionData(membersCollection, { idField: "id" });
 
-  const memberLabel = (id) => {
-    const member = members?.find((member) => member.id === id);
+  const memberLabel = (email) => {
+    const member = members?.find((member) => member.email === email);
     return (
       member?.displayName ||
       member?.email ||
       member?.uid ||
-      id
+      email
     );
   };
 
   const hasEntry = !!entries?.some((entry) => entry.name === user?.email);
 
-  const currentMember = members?.find((member) => member.id === user?.uid);
+  const currentMember = members?.find((member) => member.uid === user?.uid);
   const isAdmin = currentMember?.role === "admin";
   const [selectedUids, setSelectedUids] = useState([]);
 
@@ -100,17 +100,17 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
           </thead>
           <tbody>
             {sortedEntries.map((entry) => (
-              <tr key={entry.id} className="odd:bg-[#3a465b]/20">
+              <tr key={entry.name} className="odd:bg-[#3a465b]/20">
                 <td className="p-2 border-b border-[#3a465b]">
                   {isAdmin && (
                     <input
                       type="checkbox"
                       className="mr-2"
-                      checked={selectedUids.includes(entry.id)}
-                      onChange={() => toggleUid(entry.id)}
+                      checked={selectedUids.includes(entry.name)}
+                      onChange={() => toggleUid(entry.name)}
                     />
                   )}
-                  {memberLabel(entry.id)}
+                  {memberLabel(entry.name)}
                 </td>
                 <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.RB?.name ?? ""}</td>
                 <td className="p-2 border-b border-[#3a465b]">{roundToTwo(entry.lineUp?.RB?.points) ?? 0}</td>
