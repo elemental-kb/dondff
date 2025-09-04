@@ -27,6 +27,9 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
     );
   };
 
+  const membersWithEntries = new Set(entries?.map((entry) => entry.name));
+  const unplayedMembers = members?.filter((member) => !membersWithEntries.has(member.email));
+
   const hasEntry = !!entries?.some((entry) => entry.name === user?.email);
 
   const currentMember = members?.find((member) => member.uid === user?.uid);
@@ -101,17 +104,7 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
           <tbody>
             {sortedEntries.map((entry) => (
               <tr key={entry.name} className="odd:bg-[#3a465b]/20">
-                <td className="p-2 border-b border-[#3a465b]">
-                  {isAdmin && (
-                    <input
-                      type="checkbox"
-                      className="mr-2"
-                      checked={selectedUids.includes(entry.name)}
-                      onChange={() => toggleUid(entry.name)}
-                    />
-                  )}
-                  {memberLabel(entry.name)}
-                </td>
+                <td className="p-2 border-b border-[#3a465b]">{memberLabel(entry.name)}</td>
                 <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.RB?.name ?? ""}</td>
                 <td className="p-2 border-b border-[#3a465b]">{roundToTwo(entry.lineUp?.RB?.points) ?? 0}</td>
                 <td className="p-2 border-b border-[#3a465b]">{entry.lineUp?.WR?.name ?? ""}</td>
@@ -137,23 +130,38 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
           </button>
         </Link>
       )}
-      {isAdmin && (
-        <Link
-          to="/game/group"
-          state={{
-            leagueId: leagueId,
-            season: season,
-            week: week,
-            participants: selectedUids,
-          }}
-        >
-          <button
-            className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80 disabled:opacity-50"
-            disabled={selectedUids.length === 0}
+      {isAdmin && unplayedMembers.length > 0 && (
+        <>
+          <div className="space-y-4">
+            {unplayedMembers.map((member) => (
+              <>
+              <input
+                type="checkbox"
+                className="mr-2"
+                // checked={selectedUids.includes(entry.name)}
+                onChange={() => toggleUid(member.email)}
+              /> {member.email}
+                <br/>
+              </>
+              ))}
+          <Link
+            to="/game/group"
+            state={{
+              leagueId: leagueId,
+              season: season,
+              week: week,
+              participants: selectedUids,
+            }}
           >
-            Start Group Game
-          </button>
-        </Link>
+            <button
+              className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80 disabled:opacity-50"
+              disabled={selectedUids.length === 0}
+            >
+              Start Group Game
+            </button>
+          </Link>
+          </div>
+        </>
       )}
       {actualWeek > parseInt(week) && isAdmin && (
         <button
