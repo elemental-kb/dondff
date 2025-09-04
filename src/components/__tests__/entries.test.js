@@ -83,10 +83,11 @@ test('calculateScores sums player scores and persists finalScore', async () => {
   expect(dummyEntries[1].finalScore).toBe(30.16666); //Don't round on the backend, round on the display
 });
 
+/*TB - gotta be honest, I have no idea how this test passes the 'user3' expectation.*/
 test('memberLabel prioritizes displayName then email then id', () => {
   const entriesData = [
-    { id: 'user1', lineUp: {} },
-    { id: 'user2', lineUp: {} },
+    { id: 'user1', lineUp: {}, name: 'one@example.com' },
+    { id: 'user2', lineUp: {}, name: 'two@example.com' },
     { id: 'user3', lineUp: {} },
   ];
   const members = [
