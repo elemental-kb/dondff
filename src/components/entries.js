@@ -8,11 +8,22 @@ function roundToTwo(number) {
   return Math.round(number * 100) / 100;
 }
 
+const entryConverter = {
+  fromFirestore(
+    snapshot,
+    options
+  ) {
+    const data = snapshot.data();
+    data.id = snapshot.id;
+    return data;
+  }
+};
+
 const Entries = ({ leagueId, season, week, actualWeek }) => {
   const user = auth.currentUser;
 
-  const entriesCollection = collection(db, "leagues", leagueId, "seasons", season, "weeks", week, "entries");
-  const [entries] = useCollectionData(entriesCollection, { idField: "id" });
+  const entriesCollection = collection(db, "leagues", leagueId, "seasons", season, "weeks", week, "entries").withConverter(entryConverter);
+  const [entries] = useCollectionData(entriesCollection);
 
   const membersCollection = collection(db, "leagues", leagueId, "members");
   const [members] = useCollectionData(membersCollection, { idField: "id" });
