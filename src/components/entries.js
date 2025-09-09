@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useState } from "react";
 import { auth, db } from "../firebase-config";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
@@ -76,8 +76,7 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
     });
 
     for (const entry of entries) {
-      let memberUid = members?.find((member) => member.email === entry.name)?.uid;
-      const docRef = doc(db, "leagues", leagueId, "seasons", season, "weeks", week, "entries", memberUid);
+      const docRef = doc(db, "leagues", leagueId, "seasons", season, "weeks", week, "entries", entry.id);
 
       await setDoc(docRef, {
         name: entry.name || entry.id,
@@ -87,19 +86,11 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
     }
   };
 
-  //This isn't perfect - ideally we do this on a timer in the background, or only update once every 5 minutes, or something like that.
-  //Also, the deps argument is empty because it results in an equivalent to "run this on page load" - see https://stackoverflow.com/q/63193114
-    useEffect(() => {
-      console.log("DEBUG ONLY!");
-      calculateScores();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    return (
-      <div className="space-y-4">
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-left border border-[#3a465b]">
-            <thead className="bg-[#3a465b]">
+  return (
+    <div className="space-y-4">
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-left border border-[#3a465b]">
+          <thead className="bg-[#3a465b]">
             <tr>
               <th className="p-2 border-b border-[#3a465b]">Member</th>
               <th className="p-2 border-b border-[#3a465b]">RB</th>
@@ -107,7 +98,7 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
               <th className="p-2 border-b border-[#3a465b]">WR</th>
               <th className="p-2 border-b border-[#3a465b]">WR Projection</th>
               <th className="p-2 border-b border-[#3a465b]">Projected Total</th>
-              <th className="p-2 border-b border-[#3a465b]">{actualWeek > parseInt(week) ? ("Final Score") : ("Current Score")}</th>
+              <th className="p-2 border-b border-[#3a465b]">Final Score</th>
             </tr>
           </thead>
           <tbody>
@@ -122,66 +113,66 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
                 <td className="p-2 border-b border-[#3a465b]">{entry.finalScore ? roundToTwo(entry.finalScore) : ""}</td>
               </tr>
             ))}
-            </tbody>
-          </table>
-        </div>
-        {entries && !hasEntry && user && (
+          </tbody>
+        </table>
+      </div>
+      {entries && !hasEntry && user && (
+        <Link
+          to="/game/setting-lineups"
+          state={{
+            leagueId: leagueId,
+            season: season,
+            week: week,
+          }}
+        >
+          <button className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80">
+            Play Game
+          </button>
+        </Link>
+      )}
+      {isAdmin && unplayedMembers.length > 0 && (
+        <>
+          <div className="space-y-4">
+            {unplayedMembers.map((member) => (
+              <>
+              <input
+                type="checkbox"
+                className="mr-2"
+                // checked={selectedUids.includes(entry.name)}
+                onChange={() => toggleUid(member.email)}
+              /> {member.email}
+                <br/>
+              </>
+              ))}
           <Link
-            to="/game/setting-lineups"
+            to="/game/group"
             state={{
               leagueId: leagueId,
               season: season,
               week: week,
+              participants: selectedUids,
             }}
           >
-            <button className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80">
-              Play Game
+            <button
+              className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80 disabled:opacity-50"
+              disabled={selectedUids.length === 0}
+            >
+              Start Group Game
             </button>
           </Link>
-        )}
-        {isAdmin && unplayedMembers.length > 0 && (
-          <>
-            <div className="space-y-4">
-              {unplayedMembers.map((member) => (
-                <>
-                  <input
-                    type="checkbox"
-                    className="mr-2"
-                    // checked={selectedUids.includes(entry.name)}
-                    onChange={() => toggleUid(member.email)}
-                  /> {member.email}
-                  <br/>
-                </>
-              ))}
-              <Link
-                to="/game/group"
-                state={{
-                  leagueId: leagueId,
-                  season: season,
-                  week: week,
-                  participants: selectedUids,
-                }}
-              >
-                <button
-                  className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80 disabled:opacity-50"
-                  disabled={selectedUids.length === 0}
-                >
-                  Start Group Game
-                </button>
-              </Link>
-            </div>
-          </>
-        )}
-        {actualWeek > parseInt(week) && isAdmin && (
-          <button
-            className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
-            onClick={calculateScores}
-          >
-            Calculate Scores
-          </button>
-        )}
-      </div>
-    );
-  };
+          </div>
+        </>
+      )}
+      {actualWeek > parseInt(week) && isAdmin && (
+        <button
+          className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+          onClick={calculateScores}
+        >
+          Calculate Scores
+        </button>
+      )}
+    </div>
+  );
+};
 
 export default Entries;
