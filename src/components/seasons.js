@@ -44,12 +44,12 @@ const Seasons = ({ leagueId }) => {
       </div>
 
       {isAdmin && !docs?.find((season) => season.season === "2025") && (
-      <button
-        className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
-        onClick={() => addSeason("2025")}
-      >
-        Add 2025 Season
-      </button>
+        <button
+          className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+          onClick={() => addSeason("2025")}
+        >
+          Add 2025 Season
+        </button>
       )}
     </div>
   );
