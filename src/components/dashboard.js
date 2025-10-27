@@ -118,26 +118,19 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="mx-auto p-4 space-y-4 text-left bg-[#3a465b]/50 rounded">
+    <div className="mx-auto p-4 space-y-4 text-left bg-slate-700/50 rounded">
       <Breadcrumbs items={[{ label: "Dashboard" }]} />
-      <h2 className="text-2xl font-bold">Welcome to Your Dashboard</h2>
-      <h3 className="text-xl">{user.email}</h3>
-      <button
-        className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
-        onClick={logout}
-      >
-        Sign Out
-      </button>
-      <h4 className="text-lg font-semibold">Leagues:</h4>
+      <h2 className="text-2xl font-bold">Welcome to Your Dashboard, {user.displayName || user.email}!</h2>
+      <h3 className="text-lg font-semibold">Leagues:</h3>
       {leagues.map((league) => (
         <div
           key={league.id}
-          className="flex items-center justify-between p-4 mb-2 rounded bg-[#3a465b]/50"
+          className="flex items-center justify-between p-4 mb-2 rounded bg-slate-700/50"
         >
           <p className="font-semibold">{league.name}</p>
           <p>{league.role === "admin" ? "Admin" : "Player"}</p>
           <button
-            className="px-3 py-1 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+            className="px-3 py-1 font-bold btn rounded hover:bg-emerald-400/80"
             onClick={() => navigate(`/league/${league.id}`)}
           >
             View
@@ -147,13 +140,13 @@ const Dashboard = () => {
 
       <div className="flex gap-4">
         <button
-          className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+          className="px-4 py-2 font-bold btn rounded hover:bg-emerald-400/80"
           onClick={() => setShowCreateForm(!showCreateForm)}
         >
           Create League
         </button>
         <button
-          className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+          className="px-4 py-2 font-bold btn rounded hover:bg-emerald-400/80"
           onClick={() => setShowJoinForm(!showJoinForm)}
         >
           Join League
@@ -163,13 +156,13 @@ const Dashboard = () => {
       {showCreateForm && (
         <div className="flex mt-4 space-x-2">
           <input
-            className="flex-1 p-2 bg-transparent border rounded border-[#3a465b]"
+            className="flex-1 p-2 bg-transparent border rounded border-slate-700"
             placeholder="Enter League Name..."
             value={newLeague}
             onChange={(e) => setNewLeague(e.target.value)}
           />
           <button
-            className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+            className="px-4 py-2 font-bold btn rounded hover:bg-emerald-400/80"
             onClick={addLeague}
           >
             Submit
@@ -180,13 +173,13 @@ const Dashboard = () => {
       {showJoinForm && (
         <div className="flex mt-4 space-x-2">
           <input
-            className="flex-1 p-2 bg-transparent border rounded border-[#3a465b]"
+            className="flex-1 p-2 bg-transparent border rounded border-slate-700"
             placeholder="Enter Access Code..."
             value={joinCode}
             onChange={(e) => setJoinCode(e.target.value)}
           />
           <button
-            className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+            className="px-4 py-2 font-bold btn rounded hover:bg-emerald-400/80"
             onClick={joinLeague}
           >
             Submit

@@ -55,7 +55,7 @@ function Navbar() {
             <span className="font-semibold">{user.email || user.displayName}</span>
             <button
               onClick={logout}
-              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-gray-900 font-bold rounded"
+              className="px-4 py-2 font-bold btn rounded hover:bg-emerald-400"
             >
               Sign Out
             </button>
