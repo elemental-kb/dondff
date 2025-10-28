@@ -22,11 +22,11 @@ function Navbar() {
   return (
     <nav className="flex justify-between items-center bg-gray-800 p-4">
       <div className="flex space-x-4">
-        <Link to="/" className="font-bold hover:text-emerald-400">
+        <Link to="/" className="font-bold hover:text-dond-green">
           Home
         </Link>
         {user && (
-          <Link to="/dashboard" className="font-bold hover:text-emerald-400">
+          <Link to="/dashboard" className="font-bold hover:text-dond-green">
             Dashboard
           </Link>
         )}
@@ -36,15 +36,14 @@ function Navbar() {
           <>
             <Link
               to="/login"
-              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-gray-900 font-bold rounded"
+              className="px-4 py-2 btn rounded"
             >
               Sign In
             </Link>
             <Link
               to="/login"
               className={
-                "px-4 py-2 border-2 border-emerald-500 text-emerald-500 font-bold rounded " +
-                "hover:bg-emerald-500 hover:text-gray-900"
+                "px-4 py-2 btn rounded"
               }
             >
               Create Account
@@ -55,7 +54,7 @@ function Navbar() {
             <span className="font-semibold">{user.email || user.displayName}</span>
             <button
               onClick={logout}
-              className="px-4 py-2 font-bold btn rounded hover:bg-emerald-400"
+              className="px-4 py-2 font-bold btn rounded"
             >
               Sign Out
             </button>

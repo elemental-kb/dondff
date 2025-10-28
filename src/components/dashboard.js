@@ -130,7 +130,7 @@ const Dashboard = () => {
           <p className="font-semibold">{league.name}</p>
           <p>{league.role === "admin" ? "Admin" : "Player"}</p>
           <button
-            className="px-3 py-1 font-bold btn rounded hover:bg-emerald-400/80"
+            className="px-3 py-1 btn rounded"
             onClick={() => navigate(`/league/${league.id}`)}
           >
             View
@@ -140,13 +140,13 @@ const Dashboard = () => {
 
       <div className="flex gap-4">
         <button
-          className="px-4 py-2 font-bold btn rounded hover:bg-emerald-400/80"
+          className="px-4 py-2 btn rounded"
           onClick={() => setShowCreateForm(!showCreateForm)}
         >
           Create League
         </button>
         <button
-          className="px-4 py-2 font-bold btn rounded hover:bg-emerald-400/80"
+          className="px-4 py-2 btn rounded"
           onClick={() => setShowJoinForm(!showJoinForm)}
         >
           Join League
@@ -162,7 +162,7 @@ const Dashboard = () => {
             onChange={(e) => setNewLeague(e.target.value)}
           />
           <button
-            className="px-4 py-2 font-bold btn rounded hover:bg-emerald-400/80"
+            className="px-4 py-2 btn rounded"
             onClick={addLeague}
           >
             Submit
@@ -179,7 +179,7 @@ const Dashboard = () => {
             onChange={(e) => setJoinCode(e.target.value)}
           />
           <button
-            className="px-4 py-2 font-bold btn rounded hover:bg-emerald-400/80"
+            className="px-4 py-2 btn rounded"
             onClick={joinLeague}
           >
             Submit

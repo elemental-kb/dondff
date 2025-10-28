@@ -134,6 +134,22 @@
   cursor: pointer;
 }
 
+.fake-btn-emerald {
+  padding: 12px 16px 12px 16px;
+  border-radius: 6px;
+  border: 1px solid rgba(0,206,184,0.1);
+  background-color: #00ceb8;
+  color: #102131;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.fake-btn-emerald:hover {
+  background-color: #102131;
+  color: #00ceb8;
+  cursor: pointer;
+}
+
 label {
   margin-right: 5px;
 }

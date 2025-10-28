@@ -48,7 +48,7 @@ function Home() {
       </label>
       <button
         type="submit"
-        className="px-6 py-2 bg-emerald-500 hover:bg-emerald-400 text-gray-900 font-bold rounded self-end sm:self-center"
+        className="px-4 py-2 btn rounded"
       >
         Build Board
       </button>
@@ -71,16 +71,13 @@ function Home() {
         <div className="relative z-10 max-w-3xl px-4">
           <h1 className="text-5xl md:text-6xl font-extrabold mb-6">Deal or No Deal</h1>
           <p className="text-xl md:text-2xl mb-8">Fantasy Football Edition</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="#play"
-              className="px-8 py-3 bg-emerald-500 hover:bg-emerald-400 text-gray-900 font-bold rounded"
-            >
-              Play Now
+          <div className="flex flex-col sm:flex-row justify-center">
+            <a href="#play" className="px-4 py-2 fake-btn-emerald rounded">
+              Play Now!
             </a>
             <button
               onClick={() => navigate('/login')}
-              className="px-8 py-3 border-2 border-emerald-500 text-emerald-500 font-bold rounded hover:bg-emerald-500 hover:text-gray-900"
+              className="px-4 py-2 btn rounded"
             >
               Sign In
             </button>

@@ -76,7 +76,7 @@ const League = () => {
             week: league.currentWeek,
           }}
         >
-          <button className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80">
+          <button className="px-4 py-2 btn rounded">
             Go To Weekly Game
           </button>
         </Link>

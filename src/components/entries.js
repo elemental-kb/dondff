@@ -198,7 +198,7 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
             week: week,
           }}
         >
-          <button className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80">
+          <button className="px-4 py-2 btn rounded">
             Play Game
           </button>
         </Link>
@@ -227,7 +227,7 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
             }}
           >
             <button
-              className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80 disabled:opacity-50"
+              className="px-4 py-2 btn rounded disabled:opacity-50"
               disabled={selectedUids.length === 0}
             >
               Start Group Game
@@ -238,7 +238,7 @@ const Entries = ({ leagueId, season, week, actualWeek }) => {
       )}
       {actualWeek > parseInt(week) && isAdmin && (
         <button
-          className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+          className="px-4 py-2 btn rounded"
           onClick={calculateScores}
         >
           Calculate Scores

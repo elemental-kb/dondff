@@ -107,7 +107,7 @@ const Weeks = () => {
           </select>
         </label>
         <button
-          className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+          className="px-4 py-2 btn rounded"
           onClick={addWeek}
         >
           Add Week

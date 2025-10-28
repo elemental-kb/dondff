@@ -58,13 +58,13 @@ const SignUp = () => {
         <p>{user ? user.email : "Not Logged In"}</p>
         <div className="flex justify-center gap-4">
           <button
-            className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+            className="px-4 py-2 btn rounded"
             onClick={logout}
           >
             Sign Out
           </button>
           <button
-            className="px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+            className="px-4 py-2 btn rounded"
             onClick={() => {
               navigate("/dashboard");
             }}
@@ -100,7 +100,7 @@ const SignUp = () => {
             <p className="text-red-500">{registerError}</p>
           )}
           <button
-            className="w-full px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+            className="w-full px-4 py-2 btn rounded"
             onClick={register}
           >
             Sign Up
@@ -109,7 +109,7 @@ const SignUp = () => {
         <div className="space-y-2">
           <h3 className="text-2xl font-bold">Login</h3>
           <input
-            className="w-full p-2 bg-transparent border border-[#3a465b] rounded"
+            className="w-full p-2 bg-transparent border border-slate-900 rounded"
             placeholder="Email..."
             onChange={(e) => {
               setLoginEmail(e.target.value);
@@ -117,7 +117,7 @@ const SignUp = () => {
             }}
           />
           <input
-            className="w-full p-2 bg-transparent border border-[#3a465b] rounded"
+            className="w-full p-2 bg-transparent border border-slate-900 rounded"
             placeholder="Password..."
             type="password"
             onChange={(e) => {
@@ -127,7 +127,7 @@ const SignUp = () => {
           />
           {loginError && <p className="text-red-500">{loginError}</p>}
           <button
-            className="w-full px-4 py-2 font-bold text-[#102131] bg-[#00ceb8] rounded hover:bg-[#00ceb8]/80"
+            className="w-full px-4 py-2 btn rounded"
             onClick={login}
           >
             Login
